@@ -19,6 +19,7 @@
                 {% if not wallet or wallet.balance <= 0 or (min_open_bet_price and wallet.balance < min_open_bet_price) %}
                 <a class="btn btn-outline-light" href="/wallet/deposit">Depositar saldo</a>
                 {% endif %}
+                <a class="btn btn-outline-light" href="/wallet/withdraw">Solicitar saque</a>
             </div>
         </div>
 
