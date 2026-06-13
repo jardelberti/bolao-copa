@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="admin-section py-5">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Painel administrativo</span>
+                <h1 class="h2 fw-bold mt-2 mb-0">Jogos cadastrados</h1>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light" href="/admin/teams">Seleções</a>
+                <a class="btn btn-gold" href="/admin/games/new">Novo jogo</a>
+            </div>
+        </div>
+
+        <div class="admin-table-shell">
+            <div class="table-responsive">
+                <table class="table admin-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Time casa</th>
+                            <th>Time visitante</th>
+                            <th>Data e hora</th>
+                            <th>Valor da aposta</th>
+                            <th>Jackpot atual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for game, home_team, away_team in games %}
+                        <tr>
+                            <td>
+                                <div class="team-flag-cell team-flag-cell-compact">
+                                    <img class="team-flag" src="{{ home_team.flag_url }}" alt="Bandeira {{ home_team.name }}">
+                                    <span>{{ home_team.name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="team-flag-cell team-flag-cell-compact">
+                                    <img class="team-flag" src="{{ away_team.flag_url }}" alt="Bandeira {{ away_team.name }}">
+                                    <span>{{ away_team.name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if game.match_datetime %}
+                                    {{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ "%.2f"|format(game.bet_price) }}</td>
+                            <td><span class="status-pill status-pending">R$ {{ "%.2f"|format(game.jackpot_amount) }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary py-5">
+                                Nenhum jogo cadastrado ainda.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -285,6 +285,10 @@ body {
     min-width: 20rem;
 }
 
+.team-flag-cell-compact {
+    min-width: 12rem;
+}
+
 .team-flag {
     width: 2.5rem;
     height: 1.75rem;

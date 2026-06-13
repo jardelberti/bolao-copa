@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="auth-card">
+                    <span class="section-kicker">Painel administrativo</span>
+                    <h1 class="h2 fw-bold mt-2 mb-3">Cadastrar jogo</h1>
+                    <p class="auth-copy mb-4">
+                        Selecione os times, defina a data da partida e configure os valores iniciais do bolão.
+                    </p>
+
+                    {% if errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <ul class="mb-0">
+                            {% for error in errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" action="/admin/games" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="home_team_id">Time casa</label>
+                                <select class="form-select" id="home_team_id" name="home_team_id" required>
+                                    {% set selected_home = form.home_team_id | default('') %}
+                                    <option value="" {% if not selected_home %}selected{% endif %}>Selecione</option>
+                                    {% for team in teams %}
+                                    <option value="{{ team.id }}" {% if selected_home|string == team.id|string %}selected{% endif %}>{{ team.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="away_team_id">Time visitante</label>
+                                <select class="form-select" id="away_team_id" name="away_team_id" required>
+                                    {% set selected_away = form.away_team_id | default('') %}
+                                    <option value="" {% if not selected_away %}selected{% endif %}>Selecione</option>
+                                    {% for team in teams %}
+                                    <option value="{{ team.id }}" {% if selected_away|string == team.id|string %}selected{% endif %}>{{ team.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 mt-3">
+                            <label class="form-label" for="match_datetime">Data e hora</label>
+                            <input class="form-control" id="match_datetime" name="match_datetime" type="datetime-local" value="{{ form.match_datetime | default('') }}" required>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="bet_price">Valor da aposta</label>
+                                <input class="form-control" id="bet_price" name="bet_price" type="number" min="0.01" step="0.01" value="{{ form.bet_price | default('') }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="jackpot_amount">Jackpot inicial</label>
+                                <input class="form-control" id="jackpot_amount" name="jackpot_amount" type="number" min="0" step="0.01" value="{{ form.jackpot_amount | default('') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid d-sm-flex gap-3 mt-4">
+                            <button class="btn btn-gold btn-lg px-4" type="submit">Cadastrar</button>
+                            <a class="btn btn-outline-light btn-lg px-4" href="/admin/games">Voltar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
