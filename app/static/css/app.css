@@ -387,6 +387,19 @@ body {
     font-size: 1.7rem;
 }
 
+.pix-qrcode {
+    width: min(100%, 14rem);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: #ffffff;
+}
+
+.pix-payload-field {
+    min-height: 8rem;
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: 0.86rem;
+}
+
 .feature-number {
     color: var(--app-green);
     font-weight: 900;
