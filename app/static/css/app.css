@@ -394,6 +394,66 @@ body {
     grid-template-columns: minmax(10rem, 1fr) auto;
 }
 
+.admin-mobile-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.admin-mobile-card {
+    padding: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(20, 34, 29, 0.98), rgba(8, 18, 14, 0.98));
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.22);
+}
+
+.admin-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-card-row {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 0.85fr) minmax(0, 1.15fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding-block: 0.45rem;
+}
+
+.admin-card-row span:first-child {
+    color: var(--app-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.admin-card-row strong,
+.admin-card-row a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-card-actions,
+.admin-mobile-action-form {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.admin-card-actions {
+    margin-top: 1rem;
+}
+
+.admin-mobile-action-form .btn,
+.admin-card-actions .btn {
+    width: 100%;
+}
+
 .bet-info-card {
     height: 100%;
     padding: 1rem;
@@ -645,6 +705,46 @@ footer {
     .pix-payload-field {
         min-height: 10rem;
         font-size: 0.78rem;
+    }
+
+    .admin-header-actions,
+    .admin-form-actions,
+    .admin-form-actions .btn {
+        width: 100%;
+    }
+
+    .admin-mobile-card .team-flag-cell {
+        align-items: flex-start;
+    }
+
+    .admin-mobile-card .status-pill {
+        white-space: normal;
+        text-align: center;
+    }
+
+    .admin-card-header {
+        flex-direction: column;
+    }
+
+    .admin-card-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+
+    .deposit-actions,
+    .deposit-action-form,
+    .deposit-action-form:last-child,
+    .withdraw-action-form,
+    .withdraw-action-form:last-child,
+    .game-result-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .game-result-form .form-control {
+        width: 100%;
     }
 }
 

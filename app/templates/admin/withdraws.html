@@ -8,14 +8,14 @@
                 <span class="section-kicker">Painel administrativo</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Solicitações de saque</h1>
             </div>
-            <a class="btn btn-outline-light" href="/admin/deposits">Depósitos</a>
+            <a class="btn btn-outline-light admin-header-actions" href="/admin/deposits">Depósitos</a>
         </div>
 
         {% if error %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
         {% endif %}
 
-        <div class="admin-table-shell">
+        <div class="admin-table-shell d-none d-lg-block">
             <div class="table-responsive">
                 <table class="table admin-table align-middle mb-0">
                     <thead>
@@ -83,6 +83,64 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="admin-mobile-list d-lg-none">
+            {% for withdraw in withdraws %}
+            <div class="admin-mobile-card">
+                <div class="admin-card-header">
+                    <div>
+                        <strong>{{ withdraw.user.name }}</strong>
+                        <span class="d-block text-secondary small">{{ withdraw.user.email }}</span>
+                    </div>
+                    {% if withdraw.status == "APPROVED" %}
+                    <span class="status-pill status-approved">Aprovado</span>
+                    {% elif withdraw.status == "REJECTED" %}
+                    <span class="status-pill status-muted">Rejeitado</span>
+                    {% else %}
+                    <span class="status-pill status-pending">Pendente</span>
+                    {% endif %}
+                </div>
+
+                <div class="admin-card-row">
+                    <span>Valor</span>
+                    <strong>R$ {{ "%.2f"|format(withdraw.requested_amount) }}</strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Chave PIX</span>
+                    <strong>{{ withdraw.pix_key_type }} - {{ withdraw.pix_key }}</strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Data</span>
+                    <strong>
+                        {% if withdraw.created_at %}
+                            {{ withdraw.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+
+                {% if withdraw.status == "PENDING" %}
+                <div class="admin-card-actions">
+                    <form class="admin-mobile-action-form" method="post" action="/admin/withdraws/{{ withdraw.id }}/approve">
+                        <input class="form-control" name="notes" type="text" maxlength="500" placeholder="Observação">
+                        <button class="btn btn-success" type="submit">Aprovar</button>
+                    </form>
+                    <form class="admin-mobile-action-form" method="post" action="/admin/withdraws/{{ withdraw.id }}/reject">
+                        <input class="form-control" name="notes" type="text" maxlength="500" placeholder="Motivo">
+                        <button class="btn btn-outline-light" type="submit">Rejeitar</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="text-secondary small">{{ withdraw.notes or "Finalizado" }}</div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="admin-mobile-card text-center text-secondary py-5">
+                Nenhuma solicitação de saque encontrada.
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

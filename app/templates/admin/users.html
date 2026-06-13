@@ -8,10 +8,10 @@
                 <span class="section-kicker">Painel administrativo</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Usuários cadastrados</h1>
             </div>
-            <a class="btn btn-outline-light" href="/">Voltar para home</a>
+            <a class="btn btn-outline-light admin-header-actions" href="/">Voltar para home</a>
         </div>
 
-        <div class="admin-table-shell">
+        <div class="admin-table-shell d-none d-lg-block">
             <div class="table-responsive">
                 <table class="table admin-table align-middle mb-0">
                     <thead>
@@ -80,6 +80,67 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="admin-mobile-list d-lg-none">
+            {% for user in users %}
+            <div class="admin-mobile-card">
+                <div class="admin-card-header">
+                    <div>
+                        <strong>{{ user.name }}</strong>
+                        <span class="d-block text-secondary small">{{ user.email }}</span>
+                    </div>
+                    <span class="text-secondary small">#{{ user.id }}</span>
+                </div>
+
+                <div class="admin-card-row">
+                    <span>PIX</span>
+                    <strong>{{ user.pix_type }} - {{ user.pix_key }}</strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Cadastro</span>
+                    <strong>
+                        {% if user.created_at %}
+                            {{ user.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Aprovado</span>
+                    {% if user.is_approved %}
+                    <span class="status-pill status-approved">Sim</span>
+                    {% else %}
+                    <span class="status-pill status-pending">Não</span>
+                    {% endif %}
+                </div>
+                <div class="admin-card-row">
+                    <span>Administrador</span>
+                    {% if user.is_admin %}
+                    <span class="status-pill status-admin">Sim</span>
+                    {% else %}
+                    <span class="status-pill status-muted">Não</span>
+                    {% endif %}
+                </div>
+
+                <div class="admin-card-actions">
+                    {% if user.is_approved %}
+                    <form method="post" action="/admin/users/{{ user.id }}/revoke-approval">
+                        <button class="btn btn-outline-light" type="submit">Revogar</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="/admin/users/{{ user.id }}/approve">
+                        <button class="btn btn-success" type="submit">Aprovar</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="admin-mobile-card text-center text-secondary py-5">
+                Nenhum usuário cadastrado ainda.
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

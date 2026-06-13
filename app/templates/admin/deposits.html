@@ -8,14 +8,14 @@
                 <span class="section-kicker">Painel administrativo</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Solicitações de depósito</h1>
             </div>
-            <a class="btn btn-outline-light" href="/admin/users">Usuários</a>
+            <a class="btn btn-outline-light admin-header-actions" href="/admin/users">Usuários</a>
         </div>
 
         {% if error %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
         {% endif %}
 
-        <div class="admin-table-shell">
+        <div class="admin-table-shell d-none d-lg-block">
             <div class="table-responsive">
                 <table class="table admin-table align-middle mb-0">
                     <thead>
@@ -95,6 +95,79 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="admin-mobile-list d-lg-none">
+            {% for deposit in deposits %}
+            <div class="admin-mobile-card">
+                <div class="admin-card-header">
+                    <div>
+                        <strong>{{ deposit.user.name }}</strong>
+                        <span class="d-block text-secondary small">{{ deposit.user.email }}</span>
+                    </div>
+                    {% if deposit.status == "APPROVED" %}
+                    <span class="status-pill status-approved">Aprovado</span>
+                    {% elif deposit.status == "REJECTED" %}
+                    <span class="status-pill status-muted">Rejeitado</span>
+                    {% else %}
+                    <span class="status-pill status-pending">Pendente</span>
+                    {% endif %}
+                </div>
+
+                <div class="admin-card-row">
+                    <span>Solicitado</span>
+                    <strong>R$ {{ "%.2f"|format(deposit.requested_amount) }}</strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Creditado</span>
+                    <strong>
+                        {% if deposit.credited_amount is not none %}
+                            R$ {{ "%.2f"|format(deposit.credited_amount) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Data</span>
+                    <strong>
+                        {% if deposit.created_at %}
+                            {{ deposit.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+                <div class="admin-card-row">
+                    <span>Comprovante</span>
+                    {% if deposit.proof_image %}
+                    <a class="btn btn-outline-light btn-sm" href="{{ deposit.proof_image }}" target="_blank" rel="noreferrer">Ver</a>
+                    {% else %}
+                    <span class="text-secondary">-</span>
+                    {% endif %}
+                </div>
+
+                {% if deposit.status == "PENDING" %}
+                <div class="admin-card-actions">
+                    <form class="admin-mobile-action-form" method="post" action="/admin/deposits/{{ deposit.id }}/approve">
+                        <input class="form-control" name="credited_amount" type="number" min="0.01" step="0.01" value="{{ '%.2f'|format(deposit.requested_amount) }}" placeholder="Valor creditado" required>
+                        <input class="form-control" name="notes" type="text" maxlength="500" placeholder="Observação">
+                        <button class="btn btn-success" type="submit">Aprovar</button>
+                    </form>
+                    <form class="admin-mobile-action-form" method="post" action="/admin/deposits/{{ deposit.id }}/reject">
+                        <input class="form-control" name="notes" type="text" maxlength="500" placeholder="Motivo">
+                        <button class="btn btn-outline-light" type="submit">Rejeitar</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="text-secondary small">{{ deposit.notes or "Finalizado" }}</div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="admin-mobile-card text-center text-secondary py-5">
+                Nenhuma solicitação de depósito encontrada.
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
