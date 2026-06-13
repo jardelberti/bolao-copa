@@ -20,6 +20,7 @@
                             <th>Valor da aposta</th>
                             <th>Status</th>
                             <th>Data da aposta</th>
+                            <th class="text-end">Ação</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -68,10 +69,13 @@
                             <td>
                                 {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
                             </td>
+                            <td class="text-end">
+                                <a class="btn btn-outline-light btn-sm" href="/games/{{ bet.game.id }}/bets">Ver apostas</a>
+                            </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-secondary py-5">
+                            <td colspan="5" class="text-center text-secondary py-5">
                                 Você ainda não realizou apostas.
                             </td>
                         </tr>

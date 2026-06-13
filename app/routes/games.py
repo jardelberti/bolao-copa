@@ -87,6 +87,41 @@ async def game_detail(
     )
 
 
+@router.get("/games/{game_id}/bets")
+async def game_bets(
+    request: Request,
+    game_id: int,
+    db: Session = Depends(get_db),
+):
+    current_user = require_current_user(request, db)
+    game = _get_game_with_bets(db, game_id)
+
+    if not game:
+        return RedirectResponse(
+            url="/games",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    has_result = game.home_score is not None and game.away_score is not None
+    bets = sorted(
+        game.bets,
+        key=lambda bet: (bet.created_at, bet.id),
+        reverse=True,
+    ) if has_result else []
+
+    return templates.TemplateResponse(
+        request=request,
+        name="games/bets.html",
+        context={
+            "title": "Apostas do jogo",
+            "current_user": current_user,
+            "game": game,
+            "bets": bets,
+            "has_result": has_result,
+        },
+    )
+
+
 @router.post("/games/{game_id}/bet")
 async def place_bet(
     request: Request,
@@ -147,6 +182,19 @@ def _get_game(db: Session, game_id: int) -> Game | None:
     return (
         db.query(Game)
         .options(joinedload(Game.home_team), joinedload(Game.away_team))
+        .filter(Game.id == game_id)
+        .first()
+    )
+
+
+def _get_game_with_bets(db: Session, game_id: int) -> Game | None:
+    return (
+        db.query(Game)
+        .options(
+            joinedload(Game.home_team),
+            joinedload(Game.away_team),
+            joinedload(Game.bets).joinedload(Bet.user),
+        )
         .filter(Game.id == game_id)
         .first()
     )
