@@ -350,6 +350,17 @@ body {
     color: var(--app-text);
 }
 
+.game-result-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 18rem;
+}
+
+.game-result-form .form-control {
+    width: 4.5rem;
+}
+
 .feature-number {
     color: var(--app-green);
     font-weight: 900;

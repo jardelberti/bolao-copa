@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Annotated
+from urllib.parse import quote
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -16,6 +17,8 @@ from app.core.database import SessionLocal
 from app.models.game import Game
 from app.models.team import Team
 from app.schemas.game import GameCreate
+from app.services.game_result_service import GameResultServiceError
+from app.services.game_result_service import process_game_result
 from app.services.game_service import GameRegistrationError
 from app.services.game_service import create_game
 
@@ -34,7 +37,7 @@ def get_db():
 
 
 @router.get("/games")
-async def games(request: Request, db: Session = Depends(get_db)):
+async def games(request: Request, db: Session = Depends(get_db), error: str | None = None):
     home_team = aliased(Team)
     away_team = aliased(Team)
     games_list = (
@@ -51,6 +54,7 @@ async def games(request: Request, db: Session = Depends(get_db)):
         context={
             "title": "Admin - Jogos",
             "games": games_list,
+            "error": error,
         },
     )
 
@@ -112,6 +116,27 @@ async def create_game_post(
                 "errors": errors,
             },
             status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+    return RedirectResponse(
+        url="/admin/games",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.post("/games/{game_id}/result")
+async def process_result_post(
+    game_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    home_score: Annotated[int, Form()],
+    away_score: Annotated[int, Form()],
+):
+    try:
+        process_game_result(db, game_id, home_score, away_score)
+    except GameResultServiceError as error:
+        return RedirectResponse(
+            url=f"/admin/games?error={quote(error.message)}",
+            status_code=status.HTTP_303_SEE_OTHER,
         )
 
     return RedirectResponse(
