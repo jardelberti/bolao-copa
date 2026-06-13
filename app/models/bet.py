@@ -11,6 +11,7 @@ from sqlalchemy import func
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -65,4 +66,14 @@ class Bet(Base):
         DateTime,
         default=datetime.utcnow,
         onupdate=func.now()
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="bets"
+    )
+
+    game: Mapped["Game"] = relationship(
+        "Game",
+        back_populates="bets"
     )

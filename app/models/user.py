@@ -7,6 +7,7 @@ from sqlalchemy import String
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -65,4 +66,15 @@ class User(Base):
         DateTime,
         default=datetime.utcnow,
         onupdate=func.now()
+    )
+
+    wallet: Mapped["Wallet"] = relationship(
+        "Wallet",
+        back_populates="user",
+        uselist=False
+    )
+
+    bets: Mapped[list["Bet"]] = relationship(
+        "Bet",
+        back_populates="user"
     )

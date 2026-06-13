@@ -5,6 +5,7 @@ from sqlalchemy import Numeric
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -24,4 +25,9 @@ class Wallet(Base):
     balance: Mapped[Decimal] = mapped_column(
         Numeric(10, 2),
         default=Decimal("0.00")
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="wallet"
     )

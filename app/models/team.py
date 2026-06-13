@@ -6,6 +6,7 @@ from sqlalchemy import func
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -40,4 +41,16 @@ class Team(Base):
         DateTime,
         default=datetime.utcnow,
         onupdate=func.now()
+    )
+
+    home_games: Mapped[list["Game"]] = relationship(
+        "Game",
+        back_populates="home_team",
+        foreign_keys="Game.home_team_id"
+    )
+
+    away_games: Mapped[list["Game"]] = relationship(
+        "Game",
+        back_populates="away_team",
+        foreign_keys="Game.away_team_id"
     )

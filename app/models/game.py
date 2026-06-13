@@ -6,6 +6,7 @@ from sqlalchemy import Numeric
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -44,4 +45,21 @@ class Game(Base):
 
     away_score: Mapped[int | None] = mapped_column(
         nullable=True
+    )
+
+    home_team: Mapped["Team"] = relationship(
+        "Team",
+        back_populates="home_games",
+        foreign_keys=[home_team_id]
+    )
+
+    away_team: Mapped["Team"] = relationship(
+        "Team",
+        back_populates="away_games",
+        foreign_keys=[away_team_id]
+    )
+
+    bets: Mapped[list["Bet"]] = relationship(
+        "Bet",
+        back_populates="game"
     )
