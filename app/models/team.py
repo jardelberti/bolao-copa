@@ -1,4 +1,8 @@
+from datetime import datetime
+
+from sqlalchemy import DateTime
 from sqlalchemy import String
+from sqlalchemy import func
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -25,4 +29,15 @@ class Team(Base):
 
     flag_url: Mapped[str] = mapped_column(
         String(255)
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=func.now()
     )
