@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal
 from app.models.user import User
+from app.services.auth_service import require_admin_user
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
@@ -27,6 +28,8 @@ def get_db():
 
 @router.get("/users")
 async def users(request: Request, db: Session = Depends(get_db)):
+    current_user = require_admin_user(request, db)
+
     users_list = db.query(User).order_by(User.created_at.desc(), User.id.desc()).all()
 
     return templates.TemplateResponse(
@@ -34,13 +37,16 @@ async def users(request: Request, db: Session = Depends(get_db)):
         name="admin/users.html",
         context={
             "title": "Admin - Usuários",
+            "current_user": current_user,
             "users": users_list,
         },
     )
 
 
 @router.post("/users/{user_id}/approve")
-async def approve_user(user_id: int, db: Session = Depends(get_db)):
+async def approve_user(request: Request, user_id: int, db: Session = Depends(get_db)):
+    require_admin_user(request, db)
+
     user = db.get(User, user_id)
 
     if user:
@@ -54,7 +60,9 @@ async def approve_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/users/{user_id}/revoke-approval")
-async def revoke_user_approval(user_id: int, db: Session = Depends(get_db)):
+async def revoke_user_approval(request: Request, user_id: int, db: Session = Depends(get_db)):
+    require_admin_user(request, db)
+
     user = db.get(User, user_id)
 
     if user:

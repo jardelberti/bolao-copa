@@ -7,15 +7,13 @@ from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import joinedload
 
 from app.core.database import SessionLocal
 from app.models.bet import Bet
-from app.models.user import User
 from app.models.wallet_transaction import WalletTransaction
+from app.services.auth_service import require_current_user
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-CURRENT_USER_ID = 1
 
 router = APIRouter()
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
@@ -31,18 +29,14 @@ def get_db():
 
 @router.get("/dashboard")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
-    user = (
-        db.query(User)
-        .options(joinedload(User.wallet))
-        .filter(User.id == CURRENT_USER_ID)
-        .first()
-    )
+    current_user = require_current_user(request, db)
+    user = db.merge(current_user)
 
     wallet = user.wallet if user else None
-    total_bets = _total_bets(db)
+    total_bets = _total_bets(db, user.id)
     total_bet_amount = _money(
         db.query(func.coalesce(func.sum(Bet.amount), 0))
-        .filter(Bet.user_id == CURRENT_USER_ID)
+        .filter(Bet.user_id == user.id)
         .scalar()
     )
 
@@ -55,6 +49,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
         name="dashboard.html",
         context={
             "title": "Dashboard",
+            "current_user": current_user,
             "user": user,
             "wallet": wallet,
             "total_bets": total_bets,
@@ -66,10 +61,10 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     )
 
 
-def _total_bets(db: Session) -> int:
+def _total_bets(db: Session, user_id: int) -> int:
     return (
         db.query(func.count(Bet.id))
-        .filter(Bet.user_id == CURRENT_USER_ID)
+        .filter(Bet.user_id == user_id)
         .scalar()
         or 0
     )

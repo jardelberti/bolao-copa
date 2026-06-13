@@ -16,11 +16,11 @@ from app.core.database import SessionLocal
 from app.models.bet import Bet
 from app.models.game import Game
 from app.models.wallet import Wallet
+from app.services.auth_service import require_current_user
 from app.services.bet_service import BetServiceError
 from app.services.bet_service import create_bet
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-CURRENT_USER_ID = 1
 
 router = APIRouter()
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
@@ -36,6 +36,8 @@ def get_db():
 
 @router.get("/games")
 async def games(request: Request, db: Session = Depends(get_db)):
+    current_user = require_current_user(request, db)
+
     games_list = (
         db.query(Game)
         .options(joinedload(Game.home_team), joinedload(Game.away_team))
@@ -48,6 +50,7 @@ async def games(request: Request, db: Session = Depends(get_db)):
         name="games/list.html",
         context={
             "title": "Jogos",
+            "current_user": current_user,
             "games": games_list,
         },
     )
@@ -60,6 +63,7 @@ async def game_detail(
     db: Session = Depends(get_db),
     error: str | None = None,
 ):
+    current_user = require_current_user(request, db)
     game = _get_game(db, game_id)
 
     if not game:
@@ -68,13 +72,14 @@ async def game_detail(
             status_code=status.HTTP_303_SEE_OTHER,
         )
 
-    wallet = db.query(Wallet).filter(Wallet.user_id == CURRENT_USER_ID).first()
+    wallet = db.query(Wallet).filter(Wallet.user_id == current_user.id).first()
 
     return templates.TemplateResponse(
         request=request,
         name="games/detail.html",
         context={
             "title": "Apostar",
+            "current_user": current_user,
             "game": game,
             "wallet": wallet,
             "error": error,
@@ -84,15 +89,18 @@ async def game_detail(
 
 @router.post("/games/{game_id}/bet")
 async def place_bet(
+    request: Request,
     game_id: int,
     db: Annotated[Session, Depends(get_db)],
     home_score_guess: Annotated[int, Form()],
     away_score_guess: Annotated[int, Form()],
 ):
+    user = require_current_user(request, db)
+
     try:
         create_bet(
             db=db,
-            user_id=CURRENT_USER_ID,
+            user_id=user.id,
             game_id=game_id,
             home_score_guess=home_score_guess,
             away_score_guess=away_score_guess,
@@ -111,13 +119,15 @@ async def place_bet(
 
 @router.get("/my-bets")
 async def my_bets(request: Request, db: Session = Depends(get_db)):
+    current_user = require_current_user(request, db)
+
     bets = (
         db.query(Bet)
         .options(
             joinedload(Bet.game).joinedload(Game.home_team),
             joinedload(Bet.game).joinedload(Game.away_team),
         )
-        .filter(Bet.user_id == CURRENT_USER_ID)
+        .filter(Bet.user_id == current_user.id)
         .order_by(Bet.created_at.desc(), Bet.id.desc())
         .all()
     )
@@ -127,6 +137,7 @@ async def my_bets(request: Request, db: Session = Depends(get_db)):
         name="games/my_bets.html",
         context={
             "title": "Minhas apostas",
+            "current_user": current_user,
             "bets": bets,
         },
     )

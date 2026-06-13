@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal
 from app.schemas.user import UserCreate
+from app.services.auth_service import get_current_user
 from app.services.user_service import UserRegistrationError
 from app.services.user_service import create_user
 
@@ -31,7 +32,10 @@ def get_db():
 
 
 @router.get("/register")
-async def register(request: Request):
+async def register(
+    request: Request,
+    db: Session = Depends(get_db),
+):
     return templates.TemplateResponse(
         request=request,
         name="register.html",
@@ -39,6 +43,7 @@ async def register(request: Request):
             "title": "Cadastro",
             "form": {},
             "errors": [],
+            "current_user": get_current_user(request, db),
         },
     )
 
@@ -84,6 +89,7 @@ async def register_post(
                 "title": "Cadastro",
                 "form": form_data,
                 "errors": errors,
+                "current_user": get_current_user(request, db),
             },
             status_code=status.HTTP_400_BAD_REQUEST,
         )
@@ -95,12 +101,13 @@ async def register_post(
 
 
 @router.get("/aguardando-aprovacao")
-async def pending_approval(request: Request):
+async def pending_approval(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(
         request=request,
         name="pending_approval.html",
         context={
             "title": "Aguardando aprovação",
+            "current_user": get_current_user(request, db),
         },
     )
 

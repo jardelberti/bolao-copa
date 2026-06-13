@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-xl-5">
+                <div class="auth-card">
+                    <span class="section-kicker">Acesso</span>
+                    <h1 class="h2 fw-bold mt-2 mb-3">Entrar no Bolão da Copa</h1>
+                    <p class="auth-copy mb-4">
+                        Acesse sua conta para acompanhar apostas, saldo e resultados.
+                    </p>
+
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">{{ error }}</div>
+                    {% endif %}
+
+                    <form method="post" action="/login" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-control" id="email" name="email" type="email" maxlength="255" value="{{ form.email | default('') }}" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="password">Senha</label>
+                            <input class="form-control" id="password" name="password" type="password" required>
+                        </div>
+
+                        <div class="d-grid d-sm-flex gap-3">
+                            <button class="btn btn-gold btn-lg px-4" type="submit">Entrar</button>
+                            <a class="btn btn-outline-light btn-lg px-4" href="/register">Cadastrar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

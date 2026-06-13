@@ -14,6 +14,7 @@ from sqlalchemy.orm import joinedload
 
 from app.core.database import SessionLocal
 from app.models.deposit_request import DepositRequest
+from app.services.auth_service import require_admin_user
 from app.services.deposit_service import DepositServiceError
 from app.services.deposit_service import approve_deposit
 from app.services.deposit_service import reject_deposit
@@ -34,6 +35,8 @@ def get_db():
 
 @router.get("/deposits")
 async def deposits(request: Request, db: Session = Depends(get_db), error: str | None = None):
+    current_user = require_admin_user(request, db)
+
     deposits_list = (
         db.query(DepositRequest)
         .options(joinedload(DepositRequest.user))
@@ -46,6 +49,7 @@ async def deposits(request: Request, db: Session = Depends(get_db), error: str |
         name="admin/deposits.html",
         context={
             "title": "Admin - Depósitos",
+            "current_user": current_user,
             "deposits": deposits_list,
             "error": error,
         },
@@ -54,11 +58,14 @@ async def deposits(request: Request, db: Session = Depends(get_db), error: str |
 
 @router.post("/deposits/{deposit_id}/approve")
 async def approve_deposit_post(
+    request: Request,
     deposit_id: int,
     db: Annotated[Session, Depends(get_db)],
     credited_amount: Annotated[str, Form()],
     notes: Annotated[str, Form()] = "",
 ):
+    require_admin_user(request, db)
+
     try:
         approve_deposit(db, deposit_id, credited_amount, notes)
     except DepositServiceError as error:
@@ -72,10 +79,13 @@ async def approve_deposit_post(
 
 @router.post("/deposits/{deposit_id}/reject")
 async def reject_deposit_post(
+    request: Request,
     deposit_id: int,
     db: Annotated[Session, Depends(get_db)],
     notes: Annotated[str, Form()] = "",
 ):
+    require_admin_user(request, db)
+
     try:
         reject_deposit(db, deposit_id, notes)
     except DepositServiceError as error:

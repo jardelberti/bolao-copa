@@ -15,15 +15,23 @@
                 <span>Bolão da Copa</span>
             </a>
             <div class="d-flex align-items-center gap-2">
-                <a class="btn btn-outline-light btn-sm" href="/dashboard">Dashboard</a>
-                <a class="btn btn-outline-light btn-sm" href="/games">Apostas</a>
-                <a class="btn btn-outline-light btn-sm" href="/my-bets">Minhas</a>
-                <a class="btn btn-outline-light btn-sm" href="/admin/users">Admin</a>
-                <a class="btn btn-outline-light btn-sm" href="/admin/teams">Seleções</a>
-                <a class="btn btn-outline-light btn-sm" href="/admin/games">Jogos</a>
-                <a class="btn btn-outline-light btn-sm" href="/admin/deposits">Depósitos</a>
-                <a class="btn btn-outline-light btn-sm" href="#">Entrar</a>
-                <a class="btn btn-gold btn-sm" href="/register">Cadastrar</a>
+                {% if current_user %}
+                    <a class="btn btn-outline-light btn-sm" href="/dashboard">Dashboard</a>
+                    <a class="btn btn-outline-light btn-sm" href="/games">Jogos</a>
+                    <a class="btn btn-outline-light btn-sm" href="/my-bets">Minhas apostas</a>
+                    <a class="btn btn-outline-light btn-sm" href="/wallet/deposit">Depositar</a>
+                    {% if current_user.is_admin %}
+                    <a class="btn btn-outline-light btn-sm" href="/admin/users">Admin Usuários</a>
+                    <a class="btn btn-outline-light btn-sm" href="/admin/deposits">Admin Depósitos</a>
+                    <a class="btn btn-outline-light btn-sm" href="/admin/teams">Admin Seleções</a>
+                    <a class="btn btn-outline-light btn-sm" href="/admin/games">Admin Jogos</a>
+                    {% endif %}
+                    <a class="btn btn-outline-light btn-sm" href="/logout">Sair</a>
+                {% else %}
+                    <a class="btn btn-outline-light btn-sm" href="/">Início</a>
+                    <a class="btn btn-outline-light btn-sm" href="/login">Entrar</a>
+                    <a class="btn btn-gold btn-sm" href="/register">Cadastrar</a>
+                {% endif %}
             </div>
         </div>
     </nav>

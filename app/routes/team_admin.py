@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
 from app.models.team import Team
 from app.schemas.team import TeamCreate
+from app.services.auth_service import require_admin_user
 from app.services.team_service import TeamRegistrationError
 from app.services.team_service import create_team
 
@@ -33,6 +34,8 @@ def get_db():
 
 @router.get("/teams")
 async def teams(request: Request, db: Session = Depends(get_db)):
+    current_user = require_admin_user(request, db)
+
     teams_list = db.query(Team).order_by(Team.created_at.desc(), Team.id.desc()).all()
 
     return templates.TemplateResponse(
@@ -40,18 +43,22 @@ async def teams(request: Request, db: Session = Depends(get_db)):
         name="admin/teams.html",
         context={
             "title": "Admin - Seleções",
+            "current_user": current_user,
             "teams": teams_list,
         },
     )
 
 
 @router.get("/teams/new")
-async def new_team(request: Request):
+async def new_team(request: Request, db: Session = Depends(get_db)):
+    current_user = require_admin_user(request, db)
+
     return templates.TemplateResponse(
         request=request,
         name="admin/team_form.html",
         context={
             "title": "Nova seleção",
+            "current_user": current_user,
             "form": {},
             "errors": [],
         },
@@ -66,6 +73,8 @@ async def create_team_post(
     code: Annotated[str, Form()],
     flag_url: Annotated[str, Form()],
 ):
+    current_user = require_admin_user(request, db)
+
     form_data = {
         "name": name,
         "code": code,
@@ -90,6 +99,7 @@ async def create_team_post(
             name="admin/team_form.html",
             context={
                 "title": "Nova seleção",
+                "current_user": current_user,
                 "form": form_data,
                 "errors": errors,
             },

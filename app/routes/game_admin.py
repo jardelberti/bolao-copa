@@ -17,6 +17,7 @@ from app.core.database import SessionLocal
 from app.models.game import Game
 from app.models.team import Team
 from app.schemas.game import GameCreate
+from app.services.auth_service import require_admin_user
 from app.services.game_result_service import GameResultServiceError
 from app.services.game_result_service import process_game_result
 from app.services.game_service import GameRegistrationError
@@ -38,6 +39,8 @@ def get_db():
 
 @router.get("/games")
 async def games(request: Request, db: Session = Depends(get_db), error: str | None = None):
+    current_user = require_admin_user(request, db)
+
     home_team = aliased(Team)
     away_team = aliased(Team)
     games_list = (
@@ -53,6 +56,7 @@ async def games(request: Request, db: Session = Depends(get_db), error: str | No
         name="admin/games.html",
         context={
             "title": "Admin - Jogos",
+            "current_user": current_user,
             "games": games_list,
             "error": error,
         },
@@ -61,11 +65,14 @@ async def games(request: Request, db: Session = Depends(get_db), error: str | No
 
 @router.get("/games/new")
 async def new_game(request: Request, db: Session = Depends(get_db)):
+    current_user = require_admin_user(request, db)
+
     return templates.TemplateResponse(
         request=request,
         name="admin/game_form.html",
         context={
             "title": "Novo jogo",
+            "current_user": current_user,
             "teams": _get_teams(db),
             "form": {},
             "errors": [],
@@ -83,6 +90,8 @@ async def create_game_post(
     bet_price: Annotated[str, Form()],
     jackpot_amount: Annotated[str | None, Form()] = None,
 ):
+    current_user = require_admin_user(request, db)
+
     form_data = {
         "home_team_id": home_team_id,
         "away_team_id": away_team_id,
@@ -111,6 +120,7 @@ async def create_game_post(
             name="admin/game_form.html",
             context={
                 "title": "Novo jogo",
+                "current_user": current_user,
                 "teams": _get_teams(db),
                 "form": form_data,
                 "errors": errors,
@@ -126,11 +136,14 @@ async def create_game_post(
 
 @router.post("/games/{game_id}/result")
 async def process_result_post(
+    request: Request,
     game_id: int,
     db: Annotated[Session, Depends(get_db)],
     home_score: Annotated[int, Form()],
     away_score: Annotated[int, Form()],
 ):
+    require_admin_user(request, db)
+
     try:
         process_game_result(db, game_id, home_score, away_score)
     except GameResultServiceError as error:
