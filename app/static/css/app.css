@@ -310,6 +310,22 @@ body {
     color: var(--app-gold-soft);
 }
 
+.deposit-actions {
+    display: grid;
+    gap: 0.75rem;
+    min-width: 30rem;
+}
+
+.deposit-action-form {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 1.5fr) auto;
+    gap: 0.5rem;
+}
+
+.deposit-action-form:last-child {
+    grid-template-columns: minmax(10rem, 1fr) auto;
+}
+
 .feature-number {
     color: var(--app-green);
     font-weight: 900;
