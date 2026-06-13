@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-xl-6">
+                <div class="auth-card">
+                    <span class="section-kicker">Criar conta</span>
+                    <h1 class="h2 fw-bold mt-2 mb-3">Entre no bolão e aguarde aprovação.</h1>
+                    <p class="auth-copy mb-4">
+                        Preencha seus dados para solicitar participação. Seu acesso será liberado após aprovação.
+                    </p>
+
+                    {% if errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <ul class="mb-0">
+                            {% for error in errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" action="/register" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label" for="name">Nome</label>
+                            <input class="form-control" id="name" name="name" type="text" maxlength="150" value="{{ form.name | default('') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-control" id="email" name="email" type="email" maxlength="255" value="{{ form.email | default('') }}" required>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label class="form-label" for="pix_type">Tipo da chave Pix</label>
+                                <select class="form-select" id="pix_type" name="pix_type" required>
+                                    {% set selected_pix_type = form.pix_type | default('') %}
+                                    <option value="" {% if not selected_pix_type %}selected{% endif %}>Selecione</option>
+                                    <option value="cpf" {% if selected_pix_type == 'cpf' %}selected{% endif %}>CPF</option>
+                                    <option value="email" {% if selected_pix_type == 'email' %}selected{% endif %}>Email</option>
+                                    <option value="telefone" {% if selected_pix_type == 'telefone' %}selected{% endif %}>Telefone</option>
+                                    <option value="aleatoria" {% if selected_pix_type == 'aleatoria' %}selected{% endif %}>Aleatória</option>
+                                </select>
+                            </div>
+                            <div class="col-md-7">
+                                <label class="form-label" for="pix_key">Chave Pix</label>
+                                <input class="form-control" id="pix_key" name="pix_key" type="text" maxlength="255" value="{{ form.pix_key | default('') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label" for="password">Senha</label>
+                                <input class="form-control" id="password" name="password" type="password" minlength="8" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="password_confirmation">Confirmar senha</label>
+                                <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" minlength="8" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid d-sm-flex gap-3 mt-4">
+                            <button class="btn btn-gold btn-lg px-4" type="submit">Cadastrar</button>
+                            <a class="btn btn-outline-light btn-lg px-4" href="/">Voltar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

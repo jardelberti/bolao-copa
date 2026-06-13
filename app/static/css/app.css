@@ -166,6 +166,54 @@ body {
     padding: 1.25rem;
 }
 
+.auth-section {
+    min-height: calc(100vh - 8rem);
+    display: flex;
+    align-items: center;
+}
+
+.auth-card {
+    padding: 2rem;
+    background: linear-gradient(180deg, rgba(20, 34, 29, 0.98), rgba(8, 18, 14, 0.98));
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.32);
+}
+
+.auth-copy {
+    max-width: 38rem;
+    color: #c7d0ca;
+}
+
+.form-label {
+    color: #dce5df;
+    font-weight: 700;
+}
+
+.form-control,
+.form-select {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--app-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--app-green);
+    box-shadow: 0 0 0 0.25rem rgba(17, 184, 111, 0.18);
+    color: var(--app-text);
+}
+
+.form-control::placeholder {
+    color: var(--app-muted);
+}
+
+.form-select option {
+    background-color: var(--app-bg-soft);
+    color: var(--app-text);
+}
+
 .feature-number {
     color: var(--app-green);
     font-weight: 900;
