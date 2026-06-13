@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="admin-section py-5">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Carteira</span>
+                <h1 class="h2 fw-bold mt-2 mb-0">Meus saques</h1>
+            </div>
+            <a class="btn btn-gold user-action-btn" href="/wallet/withdraw">Solicitar saque</a>
+        </div>
+
+        {% if success %}
+        <div class="alert alert-success mb-4" role="alert">
+            Solicitação de saque enviada com sucesso.
+        </div>
+        {% endif %}
+
+        <div class="row g-3">
+            {% for withdraw in withdraws %}
+            <div class="col-12 col-lg-6">
+                <div class="user-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <div>
+                            <span class="text-secondary small d-block">Valor solicitado</span>
+                            <strong class="fs-5">R$ {{ "%.2f"|format(withdraw.requested_amount) }}</strong>
+                        </div>
+
+                        {% if withdraw.status == "APPROVED" %}
+                            <span class="status-pill status-approved">Aprovado</span>
+                        {% elif withdraw.status == "REJECTED" %}
+                            <span class="status-pill status-muted">Rejeitado</span>
+                        {% else %}
+                            <span class="status-pill status-pending">Pendente</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="withdraw-info-box mb-3">
+                        <span>Chave PIX</span>
+                        <strong>{{ withdraw.pix_key_type }} - {{ withdraw.pix_key }}</strong>
+                    </div>
+
+                    <div class="withdraw-meta">
+                        <span>{{ withdraw.notes or "Sem observações." }}</span>
+                        <span>
+                            {% if withdraw.created_at %}
+                                {{ withdraw.created_at.strftime("%d/%m/%Y %H:%M") }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="user-card text-center text-secondary py-5">
+                    Nenhuma solicitação de saque encontrada.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -83,3 +83,8 @@ class User(Base):
         "DepositRequest",
         back_populates="user"
     )
+
+    withdraw_requests: Mapped[list["WithdrawRequest"]] = relationship(
+        "WithdrawRequest",
+        back_populates="user"
+    )

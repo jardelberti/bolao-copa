@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="admin-section py-5">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Painel administrativo</span>
+                <h1 class="h2 fw-bold mt-2 mb-0">Solicitações de saque</h1>
+            </div>
+            <a class="btn btn-outline-light" href="/admin/deposits">Depósitos</a>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <div class="admin-table-shell">
+            <div class="table-responsive">
+                <table class="table admin-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Valor</th>
+                            <th>Chave PIX</th>
+                            <th>Status</th>
+                            <th>Data</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for withdraw in withdraws %}
+                        <tr>
+                            <td>
+                                <strong>{{ withdraw.user.name }}</strong>
+                                <span class="d-block text-secondary small">{{ withdraw.user.email }}</span>
+                            </td>
+                            <td>R$ {{ "%.2f"|format(withdraw.requested_amount) }}</td>
+                            <td>
+                                <strong>{{ withdraw.pix_key_type }}</strong>
+                                <span class="d-block text-secondary small">{{ withdraw.pix_key }}</span>
+                            </td>
+                            <td>
+                                {% if withdraw.status == "APPROVED" %}
+                                <span class="status-pill status-approved">Aprovado</span>
+                                {% elif withdraw.status == "REJECTED" %}
+                                <span class="status-pill status-muted">Rejeitado</span>
+                                {% else %}
+                                <span class="status-pill status-pending">Pendente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if withdraw.created_at %}
+                                    {{ withdraw.created_at.strftime("%d/%m/%Y %H:%M") }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if withdraw.status == "PENDING" %}
+                                <div class="deposit-actions">
+                                    <form class="deposit-action-form withdraw-action-form" method="post" action="/admin/withdraws/{{ withdraw.id }}/approve">
+                                        <input class="form-control form-control-sm" name="notes" type="text" maxlength="500" placeholder="Observação">
+                                        <button class="btn btn-success btn-sm" type="submit">Aprovar</button>
+                                    </form>
+                                    <form class="deposit-action-form withdraw-action-form" method="post" action="/admin/withdraws/{{ withdraw.id }}/reject">
+                                        <input class="form-control form-control-sm" name="notes" type="text" maxlength="500" placeholder="Motivo">
+                                        <button class="btn btn-outline-light btn-sm" type="submit">Rejeitar</button>
+                                    </form>
+                                </div>
+                                {% else %}
+                                <span class="text-secondary small">{{ withdraw.notes or "Finalizado" }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-secondary py-5">
+                                Nenhuma solicitação de saque encontrada.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
