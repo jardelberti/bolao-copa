@@ -14,7 +14,12 @@
                     {% endif %}
                 </h1>
             </div>
-            <a class="btn btn-gold" href="/games">Ver jogos</a>
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <a class="btn btn-gold" href="/games">Ver jogos e apostar</a>
+                {% if not wallet or wallet.balance <= 0 or (min_open_bet_price and wallet.balance < min_open_bet_price) %}
+                <a class="btn btn-outline-light" href="/wallet/deposit">Depositar saldo</a>
+                {% endif %}
+            </div>
         </div>
 
         <div class="row g-3 mb-4">

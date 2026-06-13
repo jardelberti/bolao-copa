@@ -64,6 +64,22 @@
                         </strong>
                     </div>
 
+                    {% if game.home_score is not none or game.away_score is not none %}
+                    <div class="alert alert-warning" role="alert">
+                        Jogo finalizado
+                    </div>
+                    <div class="d-grid d-sm-flex gap-3 mt-4">
+                        <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                    </div>
+                    {% elif not wallet or wallet.balance < game.bet_price %}
+                    <div class="alert alert-warning" role="alert">
+                        Saldo insuficiente para apostar neste jogo.
+                    </div>
+                    <div class="d-grid d-sm-flex gap-3 mt-4">
+                        <a class="btn btn-gold btn-lg px-4" href="/wallet/deposit">Depositar saldo</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                    </div>
+                    {% else %}
                     <form method="post" action="/games/{{ game.id }}/bet" novalidate>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -81,6 +97,7 @@
                             <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
                         </div>
                     </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

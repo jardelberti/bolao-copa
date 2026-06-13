@@ -43,7 +43,11 @@
                             <td>R$ {{ "%.2f"|format(game.bet_price) }}</td>
                             <td><span class="status-pill status-pending">R$ {{ "%.2f"|format(game.jackpot_amount) }}</span></td>
                             <td class="text-end">
+                                {% if game.home_score is not none or game.away_score is not none %}
+                                <span class="status-pill status-approved">Jogo finalizado</span>
+                                {% else %}
                                 <a class="btn btn-gold btn-sm" href="/games/{{ game.id }}">Apostar</a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% else %}

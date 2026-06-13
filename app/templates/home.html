@@ -5,48 +5,46 @@
     <div class="container">
         <div class="row align-items-center min-vh-hero g-5">
             <div class="col-lg-7">
-                <span class="hero-kicker">Bolão esportivo premium</span>
+                <span class="hero-kicker">Bolão da Copa</span>
                 <h1 class="display-4 fw-bold mt-3 mb-4">
-                    Seu bolão da Copa com clima de arena e experiência de aposta.
+                    Acompanhe os jogos disponíveis e entre na disputa pelo jackpot.
                 </h1>
                 <p class="lead hero-copy mb-4">
-                    Organize palpites, acompanhe disputas e transforme cada jogo em uma rodada mais emocionante.
+                    Veja partidas cadastradas, valores de aposta e premiações acumuladas em tempo real.
                 </p>
                 <div class="d-flex flex-column flex-sm-row gap-3">
-                    <a class="btn btn-success btn-lg px-4" href="#">Entrar</a>
+                    {% if current_user %}
+                    <a class="btn btn-success btn-lg px-4" href="/games">Ver jogos</a>
+                    <a class="btn btn-gold btn-lg px-4" href="/my-bets">Minhas apostas</a>
+                    {% else %}
+                    <a class="btn btn-success btn-lg px-4" href="/login">Entrar para apostar</a>
                     <a class="btn btn-gold btn-lg px-4" href="/register">Cadastrar</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-lg-5">
                 <div class="match-panel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="panel-label">Rodada em destaque</span>
-                        <span class="live-badge">Ao vivo</span>
+                        <span class="panel-label">Resumo do bolão</span>
+                        <span class="live-badge">Atualizado</span>
                     </div>
                     <div class="score-card">
                         <div>
-                            <span class="team-name">Brasil</span>
-                            <span class="team-meta">Favorito da rodada</span>
+                            <span class="team-name">Jogos cadastrados</span>
+                            <span class="team-meta">Partidas disponíveis</span>
                         </div>
-                        <strong>2.15</strong>
+                        <strong>{{ total_games }}</strong>
                     </div>
                     <div class="score-card">
                         <div>
-                            <span class="team-name">Empate</span>
-                            <span class="team-meta">Palpite estratégico</span>
+                            <span class="team-name">Apostas realizadas</span>
+                            <span class="team-meta">Total acumulado</span>
                         </div>
-                        <strong>3.40</strong>
-                    </div>
-                    <div class="score-card">
-                        <div>
-                            <span class="team-name">Argentina</span>
-                            <span class="team-meta">Duelo decisivo</span>
-                        </div>
-                        <strong>2.90</strong>
+                        <strong>{{ total_bets }}</strong>
                     </div>
                     <div class="jackpot-strip mt-4">
-                        <span>Prêmio estimado</span>
-                        <strong>R$ 12.500</strong>
+                        <span>Jackpot total</span>
+                        <strong>R$ {{ "%.2f"|format(total_jackpot) }}</strong>
                     </div>
                 </div>
             </div>
@@ -56,37 +54,73 @@
 
 <section class="system-section py-5">
     <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-5">
-                <span class="section-kicker">Plataforma completa</span>
-                <h2 class="h1 fw-bold mt-2">Palpites com visual profissional para sua comunidade.</h2>
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Próximas partidas</span>
+                <h2 class="h1 fw-bold mt-2 mb-0">Jogos disponíveis</h2>
             </div>
-            <div class="col-lg-7">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="feature-card h-100">
-                            <span class="feature-number">01</span>
-                            <h3>Rodadas</h3>
-                            <p>Prepare disputas para cada fase e deixe o campeonato fácil de acompanhar.</p>
+            {% if current_user %}
+            <a class="btn btn-outline-light" href="/dashboard">Ir para dashboard</a>
+            {% else %}
+            <a class="btn btn-outline-light" href="/login">Entrar</a>
+            {% endif %}
+        </div>
+
+        {% if games %}
+        <div class="row g-3">
+            {% for game in games %}
+            <div class="col-lg-6">
+                <div class="feature-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <span class="feature-number">{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</span>
+                        <span class="status-pill status-pending">{{ bet_counts.get(game.id, 0) }} apostas</span>
+                    </div>
+
+                    <div class="bet-score-card mb-4">
+                        <div class="team-side home">
+                            <span class="team-name-small">{{ game.home_team.name }}</span>
+                            <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                        </div>
+                        <div class="bet-score">x</div>
+                        <div class="team-side away">
+                            <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                            <span class="team-name-small">{{ game.away_team.name }}</span>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-card h-100">
-                            <span class="feature-number">02</span>
-                            <h3>Ranking</h3>
-                            <p>Destaque a competição entre participantes com pontuação clara e envolvente.</p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <div class="bet-info-card">
+                                <span>Valor da aposta</span>
+                                <strong>R$ {{ "%.2f"|format(game.bet_price) }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bet-info-card">
+                                <span>Jackpot atual</span>
+                                <strong>R$ {{ "%.2f"|format(game.jackpot_amount) }}</strong>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-card h-100">
-                            <span class="feature-number">03</span>
-                            <h3>Premiação</h3>
-                            <p>Crie uma atmosfera de disputa com valores, metas e chamadas em evidência.</p>
-                        </div>
-                    </div>
+
+                    {% if game.home_score is not none or game.away_score is not none %}
+                    <span class="status-pill status-approved w-100 text-center">Jogo finalizado</span>
+                    {% elif current_user %}
+                    <a class="btn btn-gold w-100" href="/games/{{ game.id }}">Apostar</a>
+                    {% else %}
+                    <a class="btn btn-gold w-100" href="/login">Entrar para apostar</a>
+                    {% endif %}
                 </div>
             </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="admin-table-shell">
+            <div class="p-5 text-center text-secondary">
+                Nenhum jogo disponível no momento.
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

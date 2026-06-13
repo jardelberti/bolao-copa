@@ -39,6 +39,9 @@ def create_bet(
     if not game:
         raise BetServiceError("Jogo não encontrado.")
 
+    if game.home_score is not None or game.away_score is not None:
+        raise BetServiceError("Este jogo já foi finalizado.")
+
     if home_score_guess < 0 or away_score_guess < 0:
         raise BetServiceError("Os placares não podem ser negativos.")
 

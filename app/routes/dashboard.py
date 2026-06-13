@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal
 from app.models.bet import Bet
+from app.models.game import Game
 from app.models.wallet_transaction import WalletTransaction
 from app.services.auth_service import require_current_user
 
@@ -43,6 +44,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     total_prizes = _transaction_sum(db, wallet.id, "PRIZE") if wallet else Decimal("0.00")
     total_refunds = _transaction_sum(db, wallet.id, "REFUND") if wallet else Decimal("0.00")
     transactions = _latest_transactions(db, wallet.id) if wallet else []
+    min_open_bet_price = _minimum_open_bet_price(db)
 
     return templates.TemplateResponse(
         request=request,
@@ -57,6 +59,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
             "total_prizes": total_prizes,
             "total_refunds": total_refunds,
             "transactions": transactions,
+            "min_open_bet_price": min_open_bet_price,
         },
     )
 
@@ -90,6 +93,19 @@ def _latest_transactions(db: Session, wallet_id: int) -> list[WalletTransaction]
         .limit(10)
         .all()
     )
+
+
+def _minimum_open_bet_price(db: Session) -> Decimal | None:
+    value = (
+        db.query(func.min(Game.bet_price))
+        .filter(Game.home_score.is_(None), Game.away_score.is_(None))
+        .scalar()
+    )
+
+    if value is None:
+        return None
+
+    return _money(value)
 
 
 def _money(value) -> Decimal:
