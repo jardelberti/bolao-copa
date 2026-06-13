@@ -21,3 +21,4 @@ httpx
 
 apscheduler
 email-validator
+itsdangerous
