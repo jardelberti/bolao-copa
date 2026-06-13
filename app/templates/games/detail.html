@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="auth-card">
+                    <span class="section-kicker">Apostar</span>
+                    <h1 class="h2 fw-bold mt-2 mb-4">{{ game.home_team.name }} x {{ game.away_team.name }}</h1>
+
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">{{ error }}</div>
+                    {% endif %}
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="score-card h-100">
+                                <div class="team-flag-cell team-flag-cell-compact">
+                                    <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                                    <strong>{{ game.home_team.name }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="score-card h-100">
+                                <div class="team-flag-cell team-flag-cell-compact">
+                                    <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                                    <strong>{{ game.away_team.name }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="bet-info-card">
+                                <span>Data/Hora</span>
+                                <strong>{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bet-info-card">
+                                <span>Valor da aposta</span>
+                                <strong>R$ {{ "%.2f"|format(game.bet_price) }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bet-info-card">
+                                <span>Jackpot atual</span>
+                                <strong>R$ {{ "%.2f"|format(game.jackpot_amount) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="jackpot-strip mb-4">
+                        <span>Saldo disponível</span>
+                        <strong>
+                            {% if wallet %}
+                                R$ {{ "%.2f"|format(wallet.balance) }}
+                            {% else %}
+                                Carteira não encontrada
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <form method="post" action="/games/{{ game.id }}/bet" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="home_score_guess">Placar {{ game.home_team.name }}</label>
+                                <input class="form-control" id="home_score_guess" name="home_score_guess" type="number" min="0" step="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="away_score_guess">Placar {{ game.away_team.name }}</label>
+                                <input class="form-control" id="away_score_guess" name="away_score_guess" type="number" min="0" step="1" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid d-sm-flex gap-3 mt-4">
+                            <button class="btn btn-gold btn-lg px-4" type="submit">Apostar</button>
+                            <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

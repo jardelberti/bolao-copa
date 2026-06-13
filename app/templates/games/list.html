@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="admin-section py-5">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Bolão da Copa</span>
+                <h1 class="h2 fw-bold mt-2 mb-0">Jogos disponíveis</h1>
+            </div>
+            <a class="btn btn-outline-light" href="/my-bets">Minhas apostas</a>
+        </div>
+
+        <div class="admin-table-shell">
+            <div class="table-responsive">
+                <table class="table admin-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Seleção casa</th>
+                            <th>Seleção visitante</th>
+                            <th>Data/Hora</th>
+                            <th>Valor da aposta</th>
+                            <th>Jackpot atual</th>
+                            <th class="text-end">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for game in games %}
+                        <tr>
+                            <td>
+                                <div class="team-flag-cell team-flag-cell-compact">
+                                    <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                                    <span>{{ game.home_team.name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="team-flag-cell team-flag-cell-compact">
+                                    <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                                    <span>{{ game.away_team.name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</td>
+                            <td>R$ {{ "%.2f"|format(game.bet_price) }}</td>
+                            <td><span class="status-pill status-pending">R$ {{ "%.2f"|format(game.jackpot_amount) }}</span></td>
+                            <td class="text-end">
+                                <a class="btn btn-gold btn-sm" href="/games/{{ game.id }}">Apostar</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-secondary py-5">
+                                Nenhum jogo disponível.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
