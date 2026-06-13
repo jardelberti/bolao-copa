@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from app.routes.admin import router as admin_router
 from app.routes.admin_deposits import router as admin_deposits_router
 from app.routes.auth import router as auth_router
+from app.routes.dashboard import router as dashboard_router
 from app.routes.game_admin import router as game_admin_router
 from app.routes.games import router as games_router
 from app.routes.team_admin import router as team_admin_router
@@ -28,6 +29,7 @@ app.mount(
 
 app.include_router(web_router)
 app.include_router(auth_router)
+app.include_router(dashboard_router)
 app.include_router(admin_router)
 app.include_router(admin_deposits_router)
 app.include_router(team_admin_router)

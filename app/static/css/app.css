@@ -361,6 +361,32 @@ body {
     width: 4.5rem;
 }
 
+.dashboard-card {
+    padding: 1.25rem;
+    background: linear-gradient(180deg, rgba(20, 34, 29, 0.98), rgba(8, 18, 14, 0.98));
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-card span,
+.dashboard-card strong {
+    display: block;
+}
+
+.dashboard-card span {
+    color: var(--app-muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.dashboard-card strong {
+    margin-top: 0.6rem;
+    color: var(--app-gold-soft);
+    font-size: 1.7rem;
+}
+
 .feature-number {
     color: var(--app-green);
     font-weight: 900;
