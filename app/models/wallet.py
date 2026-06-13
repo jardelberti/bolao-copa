@@ -31,3 +31,8 @@ class Wallet(Base):
         "User",
         back_populates="wallet"
     )
+
+    transactions: Mapped[list["WalletTransaction"]] = relationship(
+        "WalletTransaction",
+        back_populates="wallet"
+    )
