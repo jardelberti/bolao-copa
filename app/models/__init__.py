@@ -5,3 +5,4 @@ from app.models.game import Game
 from app.models.bet import Bet
 from app.models.wallet_transaction import WalletTransaction
 from app.models.deposit_request import DepositRequest
+from app.models.payment_settings import PaymentSettings

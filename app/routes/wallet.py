@@ -11,6 +11,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal
+from app.models.deposit_request import DepositRequest
 from app.models.user import User
 from app.models.wallet import Wallet
 from app.services.auth_service import require_current_user
@@ -48,6 +49,27 @@ async def deposit(request: Request, db: Session = Depends(get_db), success: str 
             "form": {},
             "error": None,
             "success": success,
+        },
+    )
+
+
+@router.get("/deposits")
+async def deposits(request: Request, db: Session = Depends(get_db)):
+    current_user = require_current_user(request, db)
+    deposit_requests = (
+        db.query(DepositRequest)
+        .filter(DepositRequest.user_id == current_user.id)
+        .order_by(DepositRequest.created_at.desc(), DepositRequest.id.desc())
+        .all()
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="wallet/deposits.html",
+        context={
+            "title": "Meus depósitos",
+            "current_user": current_user,
+            "deposits": deposit_requests,
         },
     )
 

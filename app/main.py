@@ -10,6 +10,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.core.config import SECRET_KEY
 from app.routes.admin import router as admin_router
 from app.routes.admin_deposits import router as admin_deposits_router
+from app.routes.admin_payment_settings import router as admin_payment_settings_router
 from app.routes.auth import router as auth_router
 from app.routes.auth_login import router as auth_login_router
 from app.routes.dashboard import router as dashboard_router
@@ -42,6 +43,7 @@ app.include_router(auth_login_router)
 app.include_router(dashboard_router)
 app.include_router(admin_router)
 app.include_router(admin_deposits_router)
+app.include_router(admin_payment_settings_router)
 app.include_router(team_admin_router)
 app.include_router(game_admin_router)
 app.include_router(games_router)
