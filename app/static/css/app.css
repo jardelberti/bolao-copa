@@ -278,6 +278,34 @@ body {
     color: var(--app-muted);
 }
 
+.team-flag-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 20rem;
+}
+
+.team-flag {
+    width: 2.5rem;
+    height: 1.75rem;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.team-flag-cell a {
+    color: #c7d0ca;
+    max-width: 24rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.team-flag-cell a:hover {
+    color: var(--app-gold-soft);
+}
+
 .feature-number {
     color: var(--app-green);
     font-weight: 900;
