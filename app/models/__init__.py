@@ -4,3 +4,4 @@ from app.models.team import Team
 from app.models.game import Game
 from app.models.bet import Bet
 from app.models.wallet_transaction import WalletTransaction
+from app.models.deposit_request import DepositRequest

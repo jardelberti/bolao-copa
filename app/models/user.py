@@ -78,3 +78,8 @@ class User(Base):
         "Bet",
         back_populates="user"
     )
+
+    deposit_requests: Mapped[list["DepositRequest"]] = relationship(
+        "DepositRequest",
+        back_populates="user"
+    )
