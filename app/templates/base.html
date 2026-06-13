@@ -14,25 +14,43 @@
                 <span class="brand-mark">BC</span>
                 <span>Bolão da Copa</span>
             </a>
-            <div class="d-flex align-items-center gap-2">
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Abrir menu"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
                 {% if current_user %}
-                    <a class="btn btn-outline-light btn-sm" href="/dashboard">Dashboard</a>
-                    <a class="btn btn-outline-light btn-sm" href="/games">Jogos</a>
-                    <a class="btn btn-outline-light btn-sm" href="/my-bets">Minhas apostas</a>
-                    <a class="btn btn-outline-light btn-sm" href="/wallet/deposit">Depositar</a>
-                    <a class="btn btn-outline-light btn-sm" href="/wallet/deposits">Meus depósitos</a>
+                <ul class="navbar-nav ms-auto app-nav-group">
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/games">Jogos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/my-bets">Minhas apostas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wallet/deposit">Depositar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wallet/deposits">Meus depósitos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Sair</a></li>
+                </ul>
                     {% if current_user.is_admin %}
-                    <a class="btn btn-outline-light btn-sm" href="/admin/users">Admin Usuários</a>
-                    <a class="btn btn-outline-light btn-sm" href="/admin/deposits">Admin Depósitos</a>
-                    <a class="btn btn-outline-light btn-sm" href="/admin/payment-settings">Admin PIX</a>
-                    <a class="btn btn-outline-light btn-sm" href="/admin/teams">Admin Seleções</a>
-                    <a class="btn btn-outline-light btn-sm" href="/admin/games">Admin Jogos</a>
+                <ul class="navbar-nav app-nav-group app-nav-admin">
+                    <li class="nav-item"><a class="nav-link" href="/admin/users">Admin Usuários</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/deposits">Admin Depósitos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/payment-settings">Admin PIX</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/teams">Admin Seleções</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/games">Admin Jogos</a></li>
+                </ul>
                     {% endif %}
-                    <a class="btn btn-outline-light btn-sm" href="/logout">Sair</a>
                 {% else %}
-                    <a class="btn btn-outline-light btn-sm" href="/">Início</a>
-                    <a class="btn btn-outline-light btn-sm" href="/login">Entrar</a>
-                    <a class="btn btn-gold btn-sm" href="/register">Cadastrar</a>
+                <ul class="navbar-nav ms-auto app-nav-group">
+                    <li class="nav-item"><a class="nav-link" href="/">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Entrar</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-gold" href="/register">Cadastrar</a></li>
+                </ul>
                 {% endif %}
             </div>
         </div>

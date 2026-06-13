@@ -10,6 +10,7 @@ from fastapi import Request
 from fastapi import status
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 
@@ -46,6 +47,11 @@ async def games(request: Request, db: Session = Depends(get_db)):
         .order_by(Game.match_datetime.asc(), Game.id.asc())
         .all()
     )
+    bet_counts = dict(
+        db.query(Bet.game_id, func.count(Bet.id))
+        .group_by(Bet.game_id)
+        .all()
+    )
 
     return templates.TemplateResponse(
         request=request,
@@ -54,6 +60,7 @@ async def games(request: Request, db: Session = Depends(get_db)):
             "title": "Jogos",
             "current_user": current_user,
             "games": games_list,
+            "bet_counts": bet_counts,
             "now": now,
         },
     )

@@ -26,6 +26,60 @@ body {
     backdrop-filter: blur(16px);
 }
 
+.app-navbar .navbar-toggler {
+    border-color: rgba(217, 166, 58, 0.45);
+    box-shadow: none;
+}
+
+.app-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(217, 166, 58, 0.18);
+}
+
+.app-nav-group {
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.app-navbar .nav-link {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.5rem;
+    color: #dce5df;
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 0.45rem 0.75rem;
+}
+
+.app-navbar .nav-link:hover,
+.app-navbar .nav-link:focus {
+    border-color: rgba(217, 166, 58, 0.5);
+    color: var(--app-gold-soft);
+    background: rgba(217, 166, 58, 0.08);
+}
+
+.app-navbar .nav-link-gold {
+    background: var(--app-gold);
+    border-color: var(--app-gold);
+    color: #10150f;
+}
+
+.app-navbar .nav-link-gold:hover,
+.app-navbar .nav-link-gold:focus {
+    background: var(--app-gold-soft);
+    border-color: var(--app-gold-soft);
+    color: #07100d;
+}
+
+.app-nav-admin {
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid rgba(217, 166, 58, 0.28);
+}
+
+.app-nav-admin .nav-link {
+    border-color: rgba(17, 184, 111, 0.28);
+    color: #bfffe1;
+}
+
 .brand-mark {
     display: inline-grid;
     width: 2.25rem;
@@ -164,6 +218,15 @@ body {
 
 .feature-card {
     padding: 1.25rem;
+}
+
+.user-card {
+    padding: 1.25rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(20, 34, 29, 0.98), rgba(8, 18, 14, 0.98));
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.28);
 }
 
 .auth-section {
@@ -398,6 +461,14 @@ body {
     min-height: 8rem;
     font-family: Consolas, "Liberation Mono", monospace;
     font-size: 0.86rem;
+    overflow-wrap: anywhere;
+}
+
+.score-input {
+    min-height: 3.75rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 800;
 }
 
 .feature-number {
@@ -476,4 +547,131 @@ footer {
 .status-danger {
     background: rgba(220, 53, 69, 0.16);
     color: #ff9aa2;
+}
+
+.user-status-block {
+    width: 100%;
+    min-height: 2.75rem;
+}
+
+.user-header-actions {
+    width: auto;
+}
+
+@media (max-width: 767.98px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    .user-action-btn,
+    .user-header-actions,
+    .user-header-actions .btn,
+    .auth-card .btn,
+    .user-card .btn,
+    .match-panel .btn,
+    .feature-card .btn {
+        width: 100%;
+    }
+
+    .user-card,
+    .feature-card,
+    .auth-card,
+    .match-panel,
+    .admin-table-shell {
+        padding: 1rem;
+    }
+
+    .team-flag-cell,
+    .team-flag-cell-compact {
+        min-width: 0;
+    }
+
+    .bet-score-card {
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .bet-score-card .team-side {
+        min-width: 0;
+        flex: 1 1 0;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .bet-score-card .team-side.home,
+    .bet-score-card .team-side.away {
+        justify-content: center;
+    }
+
+    .bet-score-card .team-name-small {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        font-size: 0.88rem;
+        line-height: 1.2;
+    }
+
+    .bet-score {
+        min-width: 3.25rem;
+        padding-inline: 0.65rem;
+        align-self: center;
+        font-size: 1rem;
+    }
+
+    .team-flag {
+        width: 2.25rem;
+        height: 1.55rem;
+    }
+
+    .jackpot-strip {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .pix-qrcode {
+        width: min(100%, 18rem);
+        margin-bottom: 0.5rem;
+    }
+
+    .pix-payload-field {
+        min-height: 10rem;
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .app-navbar .navbar-collapse {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--app-border);
+    }
+
+    .app-nav-group {
+        align-items: stretch;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .app-navbar .nav-item,
+    .app-navbar .nav-link {
+        width: 100%;
+    }
+
+    .app-navbar .nav-link {
+        text-align: center;
+        padding-block: 0.75rem;
+    }
+
+    .app-nav-admin {
+        margin-top: 0.75rem;
+        margin-left: 0;
+        padding-top: 0.75rem;
+        padding-left: 0;
+        border-top: 1px solid rgba(217, 166, 58, 0.28);
+        border-left: 0;
+    }
 }

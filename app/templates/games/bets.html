@@ -10,12 +10,12 @@
                     Apostas: {{ game.home_team.name }} x {{ game.away_team.name }}
                 </h1>
             </div>
-            <a class="btn btn-outline-light" href="/games">Voltar para jogos</a>
+            <a class="btn btn-outline-light user-action-btn" href="/games">Voltar para jogos</a>
         </div>
 
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <div class="bet-info-card h-100">
+                <div class="bet-info-card">
                     <span>Resultado</span>
                     <strong>
                         {% if has_result %}
@@ -27,13 +27,13 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="bet-info-card h-100">
+                <div class="bet-info-card">
                     <span>Data/Hora</span>
                     <strong>{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="bet-info-card h-100">
+                <div class="bet-info-card">
                     <span>Total de apostas</span>
                     <strong>{{ bets|length if has_result else "Oculto" }}</strong>
                 </div>
@@ -41,51 +41,38 @@
         </div>
 
         {% if not has_result %}
-        <div class="admin-table-shell">
-            <div class="p-5 text-center text-secondary">
-                As apostas serão exibidas após o resultado do jogo.
-            </div>
+        <div class="user-card text-center text-secondary py-5">
+            As apostas serão exibidas após o resultado do jogo.
         </div>
         {% else %}
-        <div class="admin-table-shell">
-            <div class="table-responsive">
-                <table class="table admin-table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Usuário</th>
-                            <th>Placar apostado</th>
-                            <th>Status</th>
-                            <th>Data da aposta</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bet in bets %}
-                        <tr>
-                            <td>{{ bet.user.name if bet.user else "Usuário removido" }}</td>
-                            <td>
-                                <span class="status-pill status-pending">
-                                    {{ bet.home_score_guess }} x {{ bet.away_score_guess }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if bet.is_winner %}
-                                <span class="status-pill status-approved">Premiada</span>
-                                {% else %}
-                                <span class="status-pill status-danger">Não premiada</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}</td>
-                        </tr>
+        <div class="row g-3">
+            {% for bet in bets %}
+            <div class="col-12 col-lg-6">
+                <div class="user-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <strong>{{ bet.user.name if bet.user else "Usuário removido" }}</strong>
+                        {% if bet.is_winner %}
+                        <span class="status-pill status-approved">Premiada</span>
                         {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center text-secondary py-5">
-                                Nenhuma aposta registrada para este jogo.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <span class="status-pill status-danger">Não premiada</span>
+                        {% endif %}
+                    </div>
+                    <div class="bet-info-card mb-3">
+                        <span>Placar apostado</span>
+                        <strong>{{ bet.home_score_guess }} x {{ bet.away_score_guess }}</strong>
+                    </div>
+                    <div class="text-secondary small">
+                        {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
+                    </div>
+                </div>
             </div>
+            {% else %}
+            <div class="col-12">
+                <div class="user-card text-center text-secondary py-5">
+                    Nenhuma aposta registrada para este jogo.
+                </div>
+            </div>
+            {% endfor %}
         </div>
         {% endif %}
     </div>

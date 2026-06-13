@@ -60,9 +60,9 @@
                 <h2 class="h1 fw-bold mt-2 mb-0">Jogos disponíveis</h2>
             </div>
             {% if current_user %}
-            <a class="btn btn-outline-light" href="/dashboard">Ir para dashboard</a>
+            <a class="btn btn-outline-light user-action-btn" href="/dashboard">Ir para dashboard</a>
             {% else %}
-            <a class="btn btn-outline-light" href="/login">Entrar</a>
+            <a class="btn btn-outline-light user-action-btn" href="/login">Entrar</a>
             {% endif %}
         </div>
 
@@ -117,10 +117,8 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="admin-table-shell">
-            <div class="p-5 text-center text-secondary">
-                Nenhum jogo disponível no momento.
-            </div>
+        <div class="user-card text-center text-secondary py-5">
+            Nenhum jogo disponível no momento.
         </div>
         {% endif %}
     </div>

@@ -8,60 +8,63 @@
                 <span class="section-kicker">Carteira</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Meus depósitos</h1>
             </div>
-            <a class="btn btn-gold" href="/wallet/deposit">Solicitar depósito</a>
+            <a class="btn btn-gold user-action-btn" href="/wallet/deposit">Solicitar depósito</a>
         </div>
 
-        <div class="admin-table-shell">
-            <div class="table-responsive">
-                <table class="table admin-table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Valor solicitado</th>
-                            <th>Valor creditado</th>
-                            <th>Status</th>
-                            <th>Observações</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for deposit in deposits %}
-                        <tr>
-                            <td>R$ {{ "%.2f"|format(deposit.requested_amount) }}</td>
-                            <td>
-                                {% if deposit.credited_amount is not none %}
-                                    R$ {{ "%.2f"|format(deposit.credited_amount) }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if deposit.status == "APPROVED" %}
-                                    <span class="status-pill status-approved">Aprovado</span>
-                                {% elif deposit.status == "REJECTED" %}
-                                    <span class="status-pill status-muted">Rejeitado</span>
-                                {% else %}
-                                    <span class="status-pill status-pending">Pendente</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ deposit.notes or "-" }}</td>
-                            <td>
-                                {% if deposit.created_at %}
-                                    {{ deposit.created_at.strftime("%d/%m/%Y %H:%M") }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                        </tr>
+        <div class="row g-3">
+            {% for deposit in deposits %}
+            <div class="col-12 col-lg-6">
+                <div class="user-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <strong>R$ {{ "%.2f"|format(deposit.requested_amount) }}</strong>
+                        {% if deposit.status == "APPROVED" %}
+                        <span class="status-pill status-approved">Aprovado</span>
+                        {% elif deposit.status == "REJECTED" %}
+                        <span class="status-pill status-muted">Rejeitado</span>
                         {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center text-secondary py-5">
-                                Nenhuma solicitação de depósito encontrada.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <span class="status-pill status-pending">Pendente</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Creditado</span>
+                                <strong>
+                                    {% if deposit.credited_amount is not none %}
+                                        R$ {{ "%.2f"|format(deposit.credited_amount) }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Data</span>
+                                <strong>
+                                    {% if deposit.created_at %}
+                                        {{ deposit.created_at.strftime("%d/%m/%Y %H:%M") }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-secondary small">
+                        {{ deposit.notes or "Sem observações." }}
+                    </div>
+                </div>
             </div>
+            {% else %}
+            <div class="col-12">
+                <div class="user-card text-center text-secondary py-5">
+                    Nenhuma solicitação de depósito encontrada.
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

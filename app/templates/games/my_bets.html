@@ -8,81 +8,63 @@
                 <span class="section-kicker">Bolão da Copa</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Minhas apostas</h1>
             </div>
-            <a class="btn btn-gold" href="/games">Ver jogos</a>
+            <a class="btn btn-gold user-action-btn" href="/games">Ver jogos</a>
         </div>
 
-        <div class="admin-table-shell">
-            <div class="table-responsive">
-                <table class="table admin-table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Aposta</th>
-                            <th>Valor da aposta</th>
-                            <th>Status</th>
-                            <th>Data da aposta</th>
-                            <th class="text-end">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bet in bets %}
-                        <tr>
-                            <td>
-                                <div class="bet-score-card">
-                                    <div class="team-side home">
-                                        <img class="team-flag" src="{{ bet.game.home_team.flag_url }}" alt="{{ bet.game.home_team.name }}">
-                                        <span class="team-name-small">{{ bet.game.home_team.name }}</span>
-                                    </div>
+        <div class="row g-3">
+            {% for bet in bets %}
+            <div class="col-12 col-lg-6">
+                <div class="user-card h-100">
+                    <div class="bet-score-card mb-4">
+                        <div class="team-side home">
+                            <img class="team-flag" src="{{ bet.game.home_team.flag_url }}" alt="{{ bet.game.home_team.name }}">
+                            <span class="team-name-small">{{ bet.game.home_team.name }}</span>
+                        </div>
 
-                                    <span class="bet-score">
-                                        {{ bet.home_score_guess }} x {{ bet.away_score_guess }}
-                                    </span>
+                        <span class="bet-score">
+                            {{ bet.home_score_guess }} x {{ bet.away_score_guess }}
+                        </span>
 
-                                    <div class="team-side away">
-                                        <span class="team-name-small">{{ bet.game.away_team.name }}</span>
-                                        <img class="team-flag" src="{{ bet.game.away_team.flag_url }}" alt="{{ bet.game.away_team.name }}">
-                                    </div>
-                                </div>
-                            </td>
+                        <div class="team-side away">
+                            <span class="team-name-small">{{ bet.game.away_team.name }}</span>
+                            <img class="team-flag" src="{{ bet.game.away_team.flag_url }}" alt="{{ bet.game.away_team.name }}">
+                        </div>
+                    </div>
 
-                            <td>
-                                <strong class="text-warning">
-                                    R$ {{ "%.2f"|format(bet.amount) }}
-                                </strong>
-                            </td>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Valor</span>
+                                <strong>R$ {{ "%.2f"|format(bet.amount) }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Data</span>
+                                <strong>{{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}</strong>
+                            </div>
+                        </div>
+                    </div>
 
-                            <td>
-                                {% if bet.game.home_score is none or bet.game.away_score is none %}
-                                    <span class="status-pill status-pending">
-                                        Aguardando
-                                    </span>
-                                {% elif bet.is_winner %}
-                                    <span class="status-pill status-approved">
-                                        Premiada
-                                    </span>
-                                {% else %}
-                                    <span class="status-pill status-danger">
-                                        Não premiada
-                                    </span>
-                                {% endif %}
-                            </td>
-
-                            <td>
-                                {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
-                            </td>
-                            <td class="text-end">
-                                <a class="btn btn-outline-light btn-sm" href="/games/{{ bet.game.id }}/bets">Ver apostas</a>
-                            </td>
-                        </tr>
+                    <div class="d-grid gap-2">
+                        {% if bet.game.home_score is none or bet.game.away_score is none %}
+                        <span class="status-pill status-pending user-status-block">Aguardando</span>
+                        {% elif bet.is_winner %}
+                        <span class="status-pill status-approved user-status-block">Premiada</span>
                         {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center text-secondary py-5">
-                                Você ainda não realizou apostas.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <span class="status-pill status-danger user-status-block">Não premiada</span>
+                        {% endif %}
+                        <a class="btn btn-outline-light" href="/games/{{ bet.game.id }}/bets">Ver apostas</a>
+                    </div>
+                </div>
             </div>
+            {% else %}
+            <div class="col-12">
+                <div class="user-card text-center text-secondary py-5">
+                    Você ainda não realizou apostas.
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <div class="auth-card">
+                <div class="auth-card bet-detail-card">
                     <span class="section-kicker">Apostar</span>
                     <h1 class="h2 fw-bold mt-2 mb-4">{{ game.home_team.name }} x {{ game.away_team.name }}</h1>
 
@@ -69,39 +69,39 @@
                         Jogo finalizado
                     </div>
                     <div class="d-grid d-sm-flex gap-3 mt-4">
-                        <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
                     </div>
                     {% elif now >= game.match_datetime %}
                     <div class="alert alert-warning" role="alert">
                         Apostas encerradas
                     </div>
                     <div class="d-grid d-sm-flex gap-3 mt-4">
-                        <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
                     </div>
                     {% elif not wallet or wallet.balance < game.bet_price %}
                     <div class="alert alert-warning" role="alert">
                         Saldo insuficiente para apostar neste jogo.
                     </div>
                     <div class="d-grid d-sm-flex gap-3 mt-4">
-                        <a class="btn btn-gold btn-lg px-4" href="/wallet/deposit">Depositar saldo</a>
-                        <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                        <a class="btn btn-gold btn-lg px-4 user-action-btn" href="/wallet/deposit">Depositar saldo</a>
+                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
                     </div>
                     {% else %}
                     <form method="post" action="/games/{{ game.id }}/bet" novalidate>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label" for="home_score_guess">Placar {{ game.home_team.name }}</label>
-                                <input class="form-control" id="home_score_guess" name="home_score_guess" type="number" min="0" step="1" required>
+                                <input class="form-control score-input" id="home_score_guess" name="home_score_guess" type="number" min="0" step="1" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="away_score_guess">Placar {{ game.away_team.name }}</label>
-                                <input class="form-control" id="away_score_guess" name="away_score_guess" type="number" min="0" step="1" required>
+                                <input class="form-control score-input" id="away_score_guess" name="away_score_guess" type="number" min="0" step="1" required>
                             </div>
                         </div>
 
                         <div class="d-grid d-sm-flex gap-3 mt-4">
-                            <button class="btn btn-gold btn-lg px-4" type="submit">Apostar</button>
-                            <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                            <button class="btn btn-gold btn-lg px-4 user-action-btn" type="submit">Apostar</button>
+                            <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
                         </div>
                     </form>
                     {% endif %}
