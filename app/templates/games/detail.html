@@ -71,6 +71,13 @@
                     <div class="d-grid d-sm-flex gap-3 mt-4">
                         <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
                     </div>
+                    {% elif now >= game.match_datetime %}
+                    <div class="alert alert-warning" role="alert">
+                        Apostas encerradas
+                    </div>
+                    <div class="d-grid d-sm-flex gap-3 mt-4">
+                        <a class="btn btn-outline-light btn-lg px-4" href="/games">Voltar</a>
+                    </div>
                     {% elif not wallet or wallet.balance < game.bet_price %}
                     <div class="alert alert-warning" role="alert">
                         Saldo insuficiente para apostar neste jogo.

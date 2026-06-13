@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 from urllib.parse import quote
@@ -37,6 +38,7 @@ def get_db():
 @router.get("/games")
 async def games(request: Request, db: Session = Depends(get_db)):
     current_user = require_current_user(request, db)
+    now = datetime.now()
 
     games_list = (
         db.query(Game)
@@ -52,6 +54,7 @@ async def games(request: Request, db: Session = Depends(get_db)):
             "title": "Jogos",
             "current_user": current_user,
             "games": games_list,
+            "now": now,
         },
     )
 
@@ -64,6 +67,7 @@ async def game_detail(
     error: str | None = None,
 ):
     current_user = require_current_user(request, db)
+    now = datetime.now()
     game = _get_game(db, game_id)
 
     if not game:
@@ -83,6 +87,7 @@ async def game_detail(
             "game": game,
             "wallet": wallet,
             "error": error,
+            "now": now,
         },
     )
 

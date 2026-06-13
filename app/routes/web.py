@@ -1,5 +1,6 @@
-from pathlib import Path
+from datetime import datetime
 from decimal import Decimal
+from pathlib import Path
 
 from fastapi import APIRouter, Request
 from fastapi import Depends
@@ -30,6 +31,7 @@ def get_db():
 @router.get("/")
 async def home(request: Request, db: Session = Depends(get_db)):
     current_user = get_current_user(request, db)
+    now = datetime.now()
     games = (
         db.query(Game)
         .options(joinedload(Game.home_team), joinedload(Game.away_team))
@@ -58,5 +60,6 @@ async def home(request: Request, db: Session = Depends(get_db)):
             "total_games": len(games),
             "total_bets": total_bets,
             "total_jackpot": total_jackpot,
+            "now": now,
         }
     )

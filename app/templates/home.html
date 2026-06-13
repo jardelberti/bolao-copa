@@ -105,6 +105,8 @@
 
                     {% if game.home_score is not none or game.away_score is not none %}
                     <span class="status-pill status-approved w-100 text-center">Jogo finalizado</span>
+                    {% elif now >= game.match_datetime %}
+                    <span class="status-pill status-danger w-100 text-center">Apostas encerradas</span>
                     {% elif current_user %}
                     <a class="btn btn-gold w-100" href="/games/{{ game.id }}">Apostar</a>
                     {% else %}
