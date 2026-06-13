@@ -7,5 +7,12 @@ class UserCreate(BaseModel):
     email: str = Field(min_length=1, max_length=255)
     pix_type: str = Field(min_length=1, max_length=20)
     pix_key: str = Field(min_length=1, max_length=255)
-    password: str = Field(min_length=8)
-    password_confirmation: str = Field(min_length=8)
+    password: str = Field(
+        min_length=8,
+        max_length=72
+    )
+
+    password_confirmation: str = Field(
+        min_length=8,
+        max_length=72
+    )
