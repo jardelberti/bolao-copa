@@ -1,0 +1,193 @@
+:root {
+    --app-bg: #07100d;
+    --app-bg-soft: #101a16;
+    --app-green: #11b86f;
+    --app-green-dark: #087246;
+    --app-gold: #d9a63a;
+    --app-gold-soft: #ffe09a;
+    --app-text: #f5f7f2;
+    --app-muted: #9ca89f;
+    --app-border: rgba(255, 255, 255, 0.12);
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 10%, rgba(17, 184, 111, 0.18), transparent 28rem),
+        radial-gradient(circle at 85% 15%, rgba(217, 166, 58, 0.14), transparent 24rem),
+        var(--app-bg);
+    color: var(--app-text);
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app-navbar {
+    background: rgba(7, 16, 13, 0.86);
+    border-bottom: 1px solid var(--app-border);
+    backdrop-filter: blur(16px);
+}
+
+.brand-mark {
+    display: inline-grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border: 1px solid rgba(217, 166, 58, 0.55);
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, rgba(17, 184, 111, 0.22), rgba(217, 166, 58, 0.18));
+    color: var(--app-gold-soft);
+    font-weight: 800;
+}
+
+.btn-gold {
+    --bs-btn-color: #10150f;
+    --bs-btn-bg: var(--app-gold);
+    --bs-btn-border-color: var(--app-gold);
+    --bs-btn-hover-color: #07100d;
+    --bs-btn-hover-bg: var(--app-gold-soft);
+    --bs-btn-hover-border-color: var(--app-gold-soft);
+    font-weight: 700;
+}
+
+.btn-success {
+    --bs-btn-bg: var(--app-green);
+    --bs-btn-border-color: var(--app-green);
+    --bs-btn-hover-bg: #19d884;
+    --bs-btn-hover-border-color: #19d884;
+    font-weight: 700;
+}
+
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--app-border);
+}
+
+.hero-section::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
+}
+
+.min-vh-hero {
+    min-height: calc(100vh - 4.5rem);
+    position: relative;
+    z-index: 1;
+    padding-block: 4rem;
+}
+
+.hero-kicker,
+.section-kicker,
+.panel-label {
+    color: var(--app-gold-soft);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.hero-copy {
+    max-width: 42rem;
+    color: #c7d0ca;
+}
+
+.match-panel,
+.feature-card {
+    background: linear-gradient(180deg, rgba(20, 34, 29, 0.96), rgba(8, 18, 14, 0.96));
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.32);
+}
+
+.match-panel {
+    padding: 1.25rem;
+}
+
+.live-badge {
+    border-radius: 999px;
+    background: rgba(17, 184, 111, 0.16);
+    color: #7dffbe;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.35rem 0.75rem;
+}
+
+.score-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.score-card strong {
+    color: var(--app-gold-soft);
+    font-size: 1.3rem;
+}
+
+.team-name,
+.team-meta {
+    display: block;
+}
+
+.team-name {
+    font-weight: 800;
+}
+
+.team-meta,
+.feature-card p {
+    color: var(--app-muted);
+}
+
+.jackpot-strip {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, rgba(217, 166, 58, 0.9), rgba(17, 184, 111, 0.86));
+    color: #07100d;
+    font-weight: 800;
+}
+
+.system-section {
+    background: rgba(3, 8, 6, 0.35);
+}
+
+.feature-card {
+    padding: 1.25rem;
+}
+
+.feature-number {
+    color: var(--app-green);
+    font-weight: 900;
+}
+
+.feature-card h3 {
+    margin-top: 1rem;
+    font-size: 1.15rem;
+}
+
+footer {
+    background: #050a08;
+    border-top: 1px solid var(--app-border);
+}
+
+@media (max-width: 575.98px) {
+    .display-4 {
+        font-size: 2.35rem;
+    }
+
+    .min-vh-hero {
+        min-height: auto;
+        padding-block: 3rem;
+    }
+}
