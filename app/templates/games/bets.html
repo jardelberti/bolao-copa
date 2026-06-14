@@ -6,34 +6,40 @@
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
             <div>
                 <span class="section-kicker">Transparência</span>
-                <h1 class="h2 fw-bold mt-2 mb-0">
-                    Apostas: {{ game.home_team.name }} x {{ game.away_team.name }}
-                </h1>
+                <h1 class="h2 fw-bold mt-2 mb-0">Apostas do jogo</h1>
             </div>
             <a class="btn btn-outline-light user-action-btn" href="/games">Voltar para jogos</a>
         </div>
 
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="bet-info-card">
-                    <span>Resultado</span>
-                    <strong>
-                        {% if has_result %}
-                            {{ game.home_score }} x {{ game.away_score }}
-                        {% else %}
-                            Aguardando
-                        {% endif %}
-                    </strong>
+        <div class="game-transparency-header mb-4">
+            <div class="game-score-line">
+                <div class="game-score-team game-score-team-home">
+                    <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                    <span>{{ game.home_team.name }}</span>
+                </div>
+
+                <strong class="game-score-value">
+                    {% if has_result %}
+                        <span>{{ game.home_score }}</span>
+                        <span>x</span>
+                        <span>{{ game.away_score }}</span>
+                    {% else %}
+                        <span>x</span>
+                    {% endif %}
+                </strong>
+
+                <div class="game-score-team game-score-team-away">
+                    <span>{{ game.away_team.name }}</span>
+                    <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="bet-info-card">
+
+            <div class="game-score-meta">
+                <div>
                     <span>Data/Hora</span>
                     <strong>{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="bet-info-card">
+                <div>
                     <span>Total de apostas</span>
                     <strong>{{ bets|length if has_result else "Oculto" }}</strong>
                 </div>
@@ -41,34 +47,39 @@
         </div>
 
         {% if not has_result %}
-        <div class="user-card text-center text-secondary py-5">
+        <div class="user-card text-center text-secondary py-4">
             As apostas serão exibidas após o resultado do jogo.
         </div>
         {% else %}
         <div class="row g-3">
             {% for bet in bets %}
             <div class="col-12 col-lg-6">
-                <div class="user-card h-100">
-                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div class="bet-transparency-card">
+                    <div class="bet-transparency-header">
                         <strong>{{ bet.user.name if bet.user else "Usuário removido" }}</strong>
                         {% if bet.is_winner %}
-                        <span class="status-pill status-approved">Premiada</span>
+                        <span class="status-pill status-prize">Premiada</span>
                         {% else %}
                         <span class="status-pill status-danger">Não premiada</span>
                         {% endif %}
                     </div>
-                    <div class="bet-info-card mb-3">
-                        <span>Placar apostado</span>
-                        <strong>{{ bet.home_score_guess }} x {{ bet.away_score_guess }}</strong>
+
+                    <div class="compact-pick-card">
+                        <div class="compact-pick-line">
+                            <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                            <strong>{{ bet.home_score_guess }} x {{ bet.away_score_guess }}</strong>
+                            <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                        </div>
                     </div>
+
                     <div class="text-secondary small">
-                        {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        Data da aposta: {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
                     </div>
                 </div>
             </div>
             {% else %}
             <div class="col-12">
-                <div class="user-card text-center text-secondary py-5">
+                <div class="user-card text-center text-secondary py-4">
                     Nenhuma aposta registrada para este jogo.
                 </div>
             </div>
