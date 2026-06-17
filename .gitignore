@@ -17,4 +17,4 @@ postgres_data/
 
 .coverage
 
-.DS_Storebackup_*.sql
+*.sql
