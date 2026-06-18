@@ -106,6 +106,7 @@ async def game_bets(
     db: Session = Depends(get_db),
 ):
     current_user = require_current_user(request, db)
+    now = datetime.now()
     game = _get_game_with_bets(db, game_id)
 
     if not game:
@@ -115,11 +116,12 @@ async def game_bets(
         )
 
     has_result = game.home_score is not None and game.away_score is not None
+    can_show_bets = now >= game.match_datetime
     bets = sorted(
         game.bets,
         key=lambda bet: (bet.created_at, bet.id),
         reverse=True,
-    ) if has_result else []
+    ) if can_show_bets else []
 
     return templates.TemplateResponse(
         request=request,
@@ -130,6 +132,8 @@ async def game_bets(
             "game": game,
             "bets": bets,
             "has_result": has_result,
+            "can_show_bets": can_show_bets,
+            "now": now,
         },
     )
 

@@ -41,14 +41,14 @@
                 </div>
                 <div>
                     <span>Total de apostas</span>
-                    <strong>{{ bets|length if has_result else "Oculto" }}</strong>
+                    <strong>{{ bets|length if can_show_bets else "Oculto" }}</strong>
                 </div>
             </div>
         </div>
 
-        {% if not has_result %}
+        {% if not can_show_bets %}
         <div class="user-card text-center text-secondary py-4">
-            As apostas serão exibidas após o resultado do jogo.
+            As apostas serão exibidas após o início do jogo.
         </div>
         {% else %}
         <div class="row g-3">
@@ -57,7 +57,9 @@
                 <div class="bet-transparency-card">
                     <div class="bet-transparency-header">
                         <strong>{{ bet.user.name if bet.user else "Usuário removido" }}</strong>
-                        {% if bet.is_winner %}
+                        {% if not has_result %}
+                        <span class="status-pill status-pending">Aguardando resultado</span>
+                        {% elif bet.is_winner %}
                         <span class="status-pill status-prize">Premiada</span>
                         {% else %}
                         <span class="status-pill status-danger">Não premiada</span>
