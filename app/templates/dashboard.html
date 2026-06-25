@@ -10,23 +10,25 @@
                     {% if user %}
                         Olá, {{ user.name }}
                     {% else %}
-                        Usuário de teste não encontrado
+                        Olá
                     {% endif %}
                 </h1>
+                <p class="text-secondary mt-2 mb-0">
+                    Aqui você acompanha seu saldo, seus palpites e os próximos bolões.
+                </p>
             </div>
+
             <div class="d-flex flex-column flex-sm-row gap-2 user-header-actions">
-                <a class="btn btn-gold" href="/games">Ver jogos e apostar</a>
-                {% if not wallet or wallet.balance <= 0 or (min_open_bet_price and wallet.balance < min_open_bet_price) %}
-                <a class="btn btn-outline-light" href="/wallet/deposit">Depositar saldo</a>
-                {% endif %}
-                <a class="btn btn-outline-light" href="/wallet/withdraw">Solicitar saque</a>
+                <a class="btn btn-gold" href="/games">Ver jogos</a>
+                <a class="btn btn-outline-light" href="/wallet/deposit">Adicionar saldo</a>
+                <a class="btn btn-outline-light" href="/my-bets">Minhas apostas</a>
             </div>
         </div>
 
         <div class="row g-3 mb-4">
-            <div class="col-md-6 col-xl-3">
-                <div class="dashboard-card h-100">
-                    <span>Saldo atual</span>
+            <div class="col-lg-4">
+                <div class="dashboard-main-card h-100">
+                    <span>Saldo disponível</span>
                     <strong>
                         {% if wallet %}
                             R$ {{ "%.2f"|format(wallet.balance) }}
@@ -34,27 +36,162 @@
                             R$ 0.00
                         {% endif %}
                     </strong>
+
+                    {% if pending_deposits > 0 %}
+                    <div class="dashboard-note mt-3">
+                        Você tem {{ pending_deposits }} depósito(s) aguardando aprovação.
+                    </div>
+                    {% elif not wallet or wallet.balance <= 0 %}
+                    <div class="dashboard-note mt-3">
+                        Adicione saldo para participar dos bolões.
+                    </div>
+                    {% elif min_open_bet_price and wallet.balance < min_open_bet_price %}
+                    <div class="dashboard-note mt-3">
+                        Seu saldo ainda não é suficiente para o próximo palpite.
+                    </div>
+                    {% else %}
+                    <div class="dashboard-note dashboard-note-success mt-3">
+                        Seu saldo está disponível para apostar.
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2 mt-3">
+                        <a class="btn btn-gold" href="/wallet/deposit">Adicionar saldo</a>
+                        <a class="btn btn-outline-light" href="/wallet/deposits">Ver depósitos</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+
+            <div class="col-lg-8">
+                {% if next_game %}
+                <div class="dashboard-next-game h-100">
+                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
+                        <div>
+                            <span class="section-kicker">Próximo bolão aberto</span>
+                            <h2 class="h4 fw-bold mt-2 mb-0">
+                                {{ next_game.home_team.name }} x {{ next_game.away_team.name }}
+                            </h2>
+                        </div>
+
+                        <span class="status-pill status-prize">Aberto para apostas</span>
+                    </div>
+
+                    <div class="dashboard-next-match mb-3">
+                        <div class="dashboard-next-team">
+                            <img class="dashboard-next-flag" src="{{ next_game.home_team.flag_url }}" alt="Bandeira {{ next_game.home_team.name }}">
+                            <strong>{{ next_game.home_team.name }}</strong>
+                        </div>
+
+                        <div class="dashboard-next-versus">x</div>
+
+                        <div class="dashboard-next-team">
+                            <img class="dashboard-next-flag" src="{{ next_game.away_team.flag_url }}" alt="Bandeira {{ next_game.away_team.name }}">
+                            <strong>{{ next_game.away_team.name }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6 col-md-3">
+                            <div class="bet-info-card">
+                                <span>Data/Hora</span>
+                                <strong>{{ next_game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="bet-info-card">
+                                <span>Apostas</span>
+                                <strong>{{ next_game_bet_count }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="bet-info-card">
+                                <span>Palpite</span>
+                                <strong>R$ {{ "%.2f"|format(next_game.bet_price) }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="bet-info-card">
+                                <span>Jackpot</span>
+                                <strong>R$ {{ "%.2f"|format(next_game.jackpot_amount) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if can_bet_next_game %}
+                    <a class="btn btn-gold btn-lg w-100" href="/games/{{ next_game.id }}">
+                        Dar meu palpite
+                    </a>
+                    {% else %}
+                    <div class="d-grid d-sm-flex gap-2">
+                        <a class="btn btn-gold btn-lg user-action-btn" href="/wallet/deposit">
+                            Adicionar saldo
+                        </a>
+                        <a class="btn btn-outline-light btn-lg user-action-btn" href="/games/{{ next_game.id }}">
+                            Ver jogo
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="dashboard-next-game h-100 text-center">
+                    <span class="section-kicker">Próximo bolão</span>
+                    <h2 class="h4 fw-bold mt-2 mb-3">Nenhum jogo aberto no momento</h2>
+                    <p class="text-secondary mb-3">
+                        Quando um novo jogo for liberado, ele aparecerá aqui.
+                    </p>
+                    <a class="btn btn-outline-light" href="/games">Ver todos os jogos</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-xl-3">
                 <div class="dashboard-card h-100">
-                    <span>Total de apostas</span>
+                    <span>Minhas apostas</span>
                     <strong>{{ total_bets }}</strong>
                 </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+
+            <div class="col-6 col-xl-3">
+                <div class="dashboard-card h-100">
+                    <span>Aguardando resultado</span>
+                    <strong>{{ waiting_result_bets }}</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-xl-3">
+                <div class="dashboard-card h-100">
+                    <span>Apostas vencedoras</span>
+                    <strong>{{ winning_bets }}</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-xl-3">
+                <div class="dashboard-card h-100">
+                    <span>Depósitos pendentes</span>
+                    <strong>{{ pending_deposits }}</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-xl-3">
                 <div class="dashboard-card h-100">
                     <span>Total apostado</span>
                     <strong>R$ {{ "%.2f"|format(total_bet_amount) }}</strong>
                 </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+
+            <div class="col-6 col-xl-3">
                 <div class="dashboard-card h-100">
                     <span>Prêmios recebidos</span>
                     <strong>R$ {{ "%.2f"|format(total_prizes) }}</strong>
                 </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+
+            <div class="col-6 col-xl-3">
                 <div class="dashboard-card h-100">
                     <span>Estornos recebidos</span>
                     <strong>R$ {{ "%.2f"|format(total_refunds) }}</strong>
@@ -62,39 +199,102 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
-            <h2 class="h5 mb-0">Últimas transações</h2>
-        </div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
+                    <div>
+                        <span class="section-kicker">Palpites</span>
+                        <h2 class="h5 fw-bold mt-2 mb-0">Minhas últimas apostas</h2>
+                    </div>
 
-        <div class="row g-3">
-            {% for transaction in transactions %}
-            <div class="col-12 col-lg-6">
-                <div class="user-card h-100">
-                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-                        {% if transaction.transaction_type == "PRIZE" %}
-                        <span class="status-pill status-approved">Prêmio</span>
-                        {% elif transaction.transaction_type == "REFUND" %}
-                        <span class="status-pill status-pending">Estorno</span>
-                        {% elif transaction.transaction_type == "BET" %}
-                        <span class="status-pill status-danger">Aposta</span>
-                        {% else %}
-                        <span class="status-pill status-admin">{{ transaction.transaction_type }}</span>
-                        {% endif %}
-                        <strong>R$ {{ "%.2f"|format(transaction.amount) }}</strong>
+                    <a class="btn btn-outline-light btn-sm" href="/my-bets">Ver todas</a>
+                </div>
+
+                <div class="row g-3">
+                    {% for bet in latest_bets %}
+                    <div class="col-12">
+                        <div class="user-card dashboard-list-card">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                                <strong>
+                                    {{ bet.game.home_team.name }} x {{ bet.game.away_team.name }}
+                                </strong>
+
+                                {% if bet.is_winner %}
+                                <span class="status-pill status-approved">Vencedora</span>
+                                {% elif bet.game.home_score is not none and bet.game.away_score is not none %}
+                                <span class="status-pill status-muted">Encerrada</span>
+                                {% elif now >= bet.game.match_datetime %}
+                                <span class="status-pill status-pending">Aguardando resultado</span>
+                                {% else %}
+                                <span class="status-pill status-prize">Jogo não iniciado</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="compact-pick-line">
+                                <img class="team-flag" src="{{ bet.game.home_team.flag_url }}" alt="Bandeira {{ bet.game.home_team.name }}">
+                                <strong>{{ bet.home_score_guess }} x {{ bet.away_score_guess }}</strong>
+                                <img class="team-flag" src="{{ bet.game.away_team.flag_url }}" alt="Bandeira {{ bet.game.away_team.name }}">
+                            </div>
+
+                            <div class="text-secondary small mt-3">
+                                Apostado em {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
+                            </div>
+                        </div>
                     </div>
-                    <p class="mb-2">{{ transaction.description }}</p>
-                    <div class="text-secondary small">
-                        {{ transaction.created_at.strftime("%d/%m/%Y %H:%M") }}
+                    {% else %}
+                    <div class="col-12">
+                        <div class="user-card text-center text-secondary py-4">
+                            Você ainda não fez nenhuma aposta.
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% else %}
-            <div class="col-12">
-                <div class="user-card text-center text-secondary py-5">
-                    Nenhuma transação encontrada.
+
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
+                    <div>
+                        <span class="section-kicker">Carteira</span>
+                        <h2 class="h5 fw-bold mt-2 mb-0">Últimas movimentações</h2>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    {% for transaction in transactions %}
+                    <div class="col-12">
+                        <div class="user-card dashboard-list-card">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                                {% if transaction.transaction_type == "PRIZE" %}
+                                <span class="status-pill status-approved">Prêmio recebido</span>
+                                {% elif transaction.transaction_type == "REFUND" %}
+                                <span class="status-pill status-pending">Estorno recebido</span>
+                                {% elif transaction.transaction_type == "BET" %}
+                                <span class="status-pill status-danger">Valor usado em aposta</span>
+                                {% elif transaction.transaction_type == "DEPOSIT" %}
+                                <span class="status-pill status-approved">Depósito aprovado</span>
+                                {% else %}
+                                <span class="status-pill status-admin">{{ transaction.transaction_type }}</span>
+                                {% endif %}
+
+                                <strong>R$ {{ "%.2f"|format(transaction.amount) }}</strong>
+                            </div>
+
+                            <p class="mb-2">{{ transaction.description }}</p>
+
+                            <div class="text-secondary small">
+                                {{ transaction.created_at.strftime("%d/%m/%Y %H:%M") }}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="user-card text-center text-secondary py-4">
+                            Nenhuma movimentação encontrada.
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>

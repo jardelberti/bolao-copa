@@ -1522,3 +1522,122 @@ footer {
         font-size: 1.2rem;
     }
 }
+
+.dashboard-main-card,
+.dashboard-next-game {
+    padding: 1.25rem;
+    background: linear-gradient(180deg, rgba(20, 34, 29, 0.98), rgba(8, 18, 14, 0.98));
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-main-card span,
+.dashboard-main-card strong {
+    display: block;
+}
+
+.dashboard-main-card > span {
+    color: var(--app-muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.dashboard-main-card > strong {
+    margin-top: 0.6rem;
+    color: var(--app-gold-soft);
+    font-size: 2.25rem;
+}
+
+.dashboard-note {
+    padding: 0.85rem;
+    border: 1px solid rgba(217, 166, 58, 0.18);
+    border-radius: 0.5rem;
+    background: rgba(217, 166, 58, 0.08);
+    color: var(--app-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.dashboard-note-success {
+    border-color: rgba(17, 184, 111, 0.22);
+    background: rgba(17, 184, 111, 0.08);
+    color: #bfffe1;
+}
+
+.dashboard-next-match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+}
+
+.dashboard-next-team {
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    text-align: center;
+    min-width: 0;
+}
+
+.dashboard-next-team strong {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-next-flag {
+    width: 4rem;
+    height: 2.65rem;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.35rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-next-versus {
+    min-width: 4rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(217, 166, 58, 0.4);
+    border-radius: 0.5rem;
+    background: rgba(217, 166, 58, 0.1);
+    color: var(--app-gold-soft);
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 900;
+}
+
+.dashboard-list-card {
+    padding: 1rem;
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-main-card,
+    .dashboard-next-game {
+        padding: 1rem;
+    }
+
+    .dashboard-main-card > strong {
+        font-size: 1.9rem;
+    }
+
+    .dashboard-next-match {
+        gap: 0.5rem;
+    }
+
+    .dashboard-next-flag {
+        width: 3rem;
+        height: 2rem;
+    }
+
+    .dashboard-next-team strong {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+
+    .dashboard-next-versus {
+        min-width: 3rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+}
