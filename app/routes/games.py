@@ -252,6 +252,7 @@ async def place_bet(
 @router.get("/my-bets")
 async def my_bets(request: Request, db: Session = Depends(get_db)):
     current_user = require_current_user(request, db)
+    now = datetime.now()
 
     bets = (
         db.query(Bet)
@@ -271,6 +272,7 @@ async def my_bets(request: Request, db: Session = Depends(get_db)):
             "title": "Minhas apostas",
             "current_user": current_user,
             "bets": bets,
+            "now": now,
         },
     )
 

@@ -7,7 +7,11 @@
             <div>
                 <span class="section-kicker">Transparência</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Apostas do jogo</h1>
+                <p class="text-secondary mt-2 mb-0">
+                    As apostas ficam visíveis para todos após o início da partida.
+                </p>
             </div>
+
             <a class="btn btn-outline-light user-action-btn" href="/games">Voltar para jogos</a>
         </div>
 
@@ -39,28 +43,47 @@
                     <span>Data/Hora</span>
                     <strong>{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
                 </div>
+
                 <div>
                     <span>Total de apostas</span>
-                    <strong>{{ bets|length if can_show_bets else "Oculto" }}</strong>
+                    <strong>{{ bets|length if can_show_bets else "Oculto até o início" }}</strong>
                 </div>
             </div>
         </div>
 
         {% if not can_show_bets %}
-        <div class="user-card text-center text-secondary py-4">
-            As apostas serão exibidas após o início do jogo.
+        <div class="user-card text-center py-4">
+            <h2 class="h5 fw-bold mb-2">Apostas ainda ocultas</h2>
+            <p class="text-secondary mb-3">
+                Para manter o bolão justo, os palpites só aparecem depois que o jogo começa.
+            </p>
+            <a class="btn btn-outline-light" href="/games">Voltar para jogos</a>
         </div>
         {% else %}
+
+        {% if has_result %}
+        <div class="deposit-status-box deposit-status-approved mb-4">
+            <span>Status do jogo</span>
+            <strong>Resultado lançado. As apostas premiadas estão destacadas abaixo.</strong>
+        </div>
+        {% else %}
+        <div class="deposit-status-box mb-4">
+            <span>Status do jogo</span>
+            <strong>O jogo já começou. As apostas estão visíveis e o bolão aguarda o resultado oficial.</strong>
+        </div>
+        {% endif %}
+
         <div class="row g-3">
             {% for bet in bets %}
             <div class="col-12 col-lg-6">
                 <div class="bet-transparency-card">
                     <div class="bet-transparency-header">
                         <strong>{{ bet.user.name if bet.user else "Usuário removido" }}</strong>
+
                         {% if not has_result %}
-                        <span class="status-pill status-pending">Aguardando resultado</span>
+                        <span class="status-pill status-pending">Aguardando resultado do jogo</span>
                         {% elif bet.is_winner %}
-                        <span class="status-pill status-prize">Premiada</span>
+                        <span class="status-pill status-prize">Aposta vencedora</span>
                         {% else %}
                         <span class="status-pill status-danger">Não premiada</span>
                         {% endif %}
@@ -74,8 +97,20 @@
                         </div>
                     </div>
 
-                    <div class="text-secondary small">
-                        Data da aposta: {{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}
+                    <div class="row g-3 mt-1">
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Valor</span>
+                                <strong>R$ {{ "%.2f"|format(bet.amount) }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Data</span>
+                                <strong>{{ bet.created_at.strftime("%d/%m/%Y %H:%M") }}</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
