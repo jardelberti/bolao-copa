@@ -3,50 +3,124 @@
 {% block content %}
 <section class="hero-section">
     <div class="container">
-        <div class="row align-items-center min-vh-hero g-5">
-            <div class="col-lg-7">
+        <div class="row align-items-center min-vh-hero g-4">
+            <div class="col-lg-6">
                 <span class="hero-kicker">Bolão da Copa</span>
                 <h1 class="display-4 fw-bold mt-3 mb-4">
-                    Acompanhe os jogos disponíveis e entre na disputa pelo jackpot.
+                    Entre no bolão e acompanhe o jackpot de cada jogo.
                 </h1>
                 <p class="lead hero-copy mb-4">
-                    Veja partidas cadastradas, valores de aposta e premiações acumuladas em tempo real.
+                    Veja o próximo bolão disponível, acompanhe o total de apostas e confira o histórico dos jogos encerrados.
                 </p>
+
                 <div class="d-flex flex-column flex-sm-row gap-3">
                     {% if current_user %}
                     <a class="btn btn-success btn-lg px-4" href="/games">Ver jogos</a>
                     <a class="btn btn-gold btn-lg px-4" href="/my-bets">Minhas apostas</a>
                     {% else %}
                     <a class="btn btn-success btn-lg px-4" href="/login">Entrar para apostar</a>
-                    <a class="btn btn-gold btn-lg px-4" href="/register">Cadastrar</a>
+                    <a class="btn btn-gold btn-lg px-4" href="/register">Criar cadastro</a>
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-5">
-                <div class="match-panel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="panel-label">Resumo do bolão</span>
-                        <span class="live-badge">Atualizado</span>
+
+            <div class="col-lg-6">
+                {% if featured_game %}
+                {% set featured_summary = game_summaries.get(featured_game.id) %}
+
+                <div class="match-panel featured-pool-card">
+                    <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+                        {% if featured_summary.is_open %}
+                        <span class="panel-label">Bolão em destaque</span>
+                        {% else %}
+                        <span class="panel-label">Último bolão</span>
+                        {% endif %}
+
+                        <span class="status-pill {{ featured_summary.status_class }}">
+                            {{ featured_summary.status_label }}
+                        </span>
                     </div>
-                    <div class="score-card">
-                        <div>
-                            <span class="team-name">Jogos cadastrados</span>
-                            <span class="team-meta">Partidas disponíveis</span>
+
+                    <div class="featured-match">
+                        <div class="featured-team">
+                            <img class="featured-flag" src="{{ featured_game.home_team.flag_url }}" alt="Bandeira {{ featured_game.home_team.name }}">
+                            <strong>{{ featured_game.home_team.name }}</strong>
                         </div>
-                        <strong>{{ total_games }}</strong>
-                    </div>
-                    <div class="score-card">
-                        <div>
-                            <span class="team-name">Apostas realizadas</span>
-                            <span class="team-meta">Total acumulado</span>
+
+                        <div class="featured-versus">
+                            {% if featured_summary.has_result %}
+                            <strong>{{ featured_game.home_score }} x {{ featured_game.away_score }}</strong>
+                            {% else %}
+                            <strong>x</strong>
+                            {% endif %}
                         </div>
-                        <strong>{{ total_bets }}</strong>
+
+                        <div class="featured-team">
+                            <img class="featured-flag" src="{{ featured_game.away_team.flag_url }}" alt="Bandeira {{ featured_game.away_team.name }}">
+                            <strong>{{ featured_game.away_team.name }}</strong>
+                        </div>
                     </div>
-                    <div class="jackpot-strip mt-4">
-                        <span>Jackpot total</span>
-                        <strong>R$ {{ "%.2f"|format(total_jackpot) }}</strong>
+
+                    <div class="featured-date mt-3">
+                        {{ featured_game.match_datetime.strftime("%d/%m/%Y às %H:%M") }}
+                    </div>
+
+                    <div class="home-stat-grid mt-4">
+                        <div class="home-stat-card">
+                            <span>Apostas</span>
+                            <strong>{{ featured_summary.bets_count }}</strong>
+                        </div>
+
+                        <div class="home-stat-card">
+                            <span>Jackpot</span>
+                            <strong>R$ {{ "%.2f"|format(featured_summary.jackpot) }}</strong>
+                        </div>
+
+                        <div class="home-stat-card">
+                            <span>Valor do palpite</span>
+                            <strong>R$ {{ "%.2f"|format(featured_game.bet_price) }}</strong>
+                        </div>
+
+                        <div class="home-stat-card">
+                            <span>Status</span>
+                            <strong>
+                                {% if featured_summary.is_open %}
+                                Disponível
+                                {% elif featured_summary.has_result %}
+                                Encerrado
+                                {% else %}
+                                Sem resultado
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    {% if featured_summary.winner_names %}
+                    <div class="winner-box mt-3">
+                        <span>Ganhador(es)</span>
+                        <strong>{{ featured_summary.winner_names|join(", ") }}</strong>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        {% if featured_summary.is_open and current_user %}
+                        <a class="btn btn-gold btn-lg w-100" href="/games/{{ featured_game.id }}">Dar meu palpite</a>
+                        {% elif featured_summary.is_open %}
+                        <a class="btn btn-gold btn-lg w-100" href="/login">Entrar para apostar</a>
+                        {% else %}
+                        <a class="btn btn-outline-light btn-lg w-100" href="/games/{{ featured_game.id }}/bets">Ver apostas do jogo</a>
+                        {% endif %}
                     </div>
                 </div>
+                {% else %}
+                <div class="match-panel text-center">
+                    <span class="panel-label">Resumo do bolão</span>
+                    <h2 class="h4 mt-3 mb-2">Nenhum jogo cadastrado</h2>
+                    <p class="text-secondary mb-0">
+                        Quando houver jogos cadastrados, o próximo bolão aparecerá aqui.
+                    </p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -54,11 +128,35 @@
 
 <section class="system-section py-5">
     <div class="container">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="dashboard-card h-100">
+                    <span>Jogos cadastrados</span>
+                    <strong>{{ total_games }}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dashboard-card h-100">
+                    <span>Apostas realizadas</span>
+                    <strong>{{ total_bets }}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dashboard-card h-100">
+                    <span>Jackpot total</span>
+                    <strong>R$ {{ "%.2f"|format(total_jackpot) }}</strong>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
             <div>
-                <span class="section-kicker">Próximas partidas</span>
-                <h2 class="h1 fw-bold mt-2 mb-0">Jogos disponíveis</h2>
+                <span class="section-kicker">Próximos bolões</span>
+                <h2 class="h1 fw-bold mt-2 mb-0">Outros jogos disponíveis</h2>
             </div>
+
             {% if current_user %}
             <a class="btn btn-outline-light user-action-btn" href="/dashboard">Ir para dashboard</a>
             {% else %}
@@ -66,14 +164,16 @@
             {% endif %}
         </div>
 
-        {% if games %}
-        <div class="row g-3">
-            {% for game in games %}
+        {% if upcoming_games %}
+        <div class="row g-3 mb-5">
+            {% for game in upcoming_games %}
+            {% set summary = game_summaries.get(game.id) %}
+
             <div class="col-lg-6">
                 <div class="feature-card h-100">
                     <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
                         <span class="feature-number">{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</span>
-                        <span class="status-pill status-pending">{{ bet_counts.get(game.id, 0) }} apostas</span>
+                        <span class="status-pill {{ summary.status_class }}">{{ summary.bets_count }} apostas</span>
                     </div>
 
                     <div class="bet-score-card mb-4">
@@ -81,7 +181,9 @@
                             <span class="team-name-small">{{ game.home_team.name }}</span>
                             <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
                         </div>
+
                         <div class="bet-score">x</div>
+
                         <div class="team-side away">
                             <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
                             <span class="team-name-small">{{ game.away_team.name }}</span>
@@ -95,19 +197,16 @@
                                 <strong>R$ {{ "%.2f"|format(game.bet_price) }}</strong>
                             </div>
                         </div>
+
                         <div class="col-sm-6">
                             <div class="bet-info-card">
                                 <span>Jackpot atual</span>
-                                <strong>R$ {{ "%.2f"|format(game.jackpot_amount) }}</strong>
+                                <strong>R$ {{ "%.2f"|format(summary.jackpot) }}</strong>
                             </div>
                         </div>
                     </div>
 
-                    {% if game.home_score is not none or game.away_score is not none %}
-                    <span class="status-pill status-approved w-100 text-center">Jogo finalizado</span>
-                    {% elif now >= game.match_datetime %}
-                    <span class="status-pill status-danger w-100 text-center">Apostas encerradas</span>
-                    {% elif current_user %}
+                    {% if current_user %}
                     <a class="btn btn-gold w-100" href="/games/{{ game.id }}">Apostar</a>
                     {% else %}
                     <a class="btn btn-gold w-100" href="/login">Entrar para apostar</a>
@@ -117,8 +216,83 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="user-card text-center text-secondary py-5">
-            Nenhum jogo disponível no momento.
+        <div class="user-card text-center text-secondary py-4 mb-5">
+            Não há outros jogos abertos para aposta no momento.
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Histórico</span>
+                <h2 class="h1 fw-bold mt-2 mb-0">Bolões encerrados</h2>
+            </div>
+        </div>
+
+        {% if finished_games %}
+        <div class="row g-3">
+            {% for game in finished_games %}
+            {% set summary = game_summaries.get(game.id) %}
+
+            <div class="col-lg-6">
+                <div class="feature-card h-100 finished-game-card">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <span class="feature-number">{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</span>
+                        <span class="status-pill {{ summary.status_class }}">{{ summary.status_label }}</span>
+                    </div>
+
+                    <div class="bet-score-card mb-4">
+                        <div class="team-side home">
+                            <span class="team-name-small">{{ game.home_team.name }}</span>
+                            <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                        </div>
+
+                        <div class="bet-score">
+                            {% if summary.has_result %}
+                            {{ game.home_score }} x {{ game.away_score }}
+                            {% else %}
+                            x
+                            {% endif %}
+                        </div>
+
+                        <div class="team-side away">
+                            <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                            <span class="team-name-small">{{ game.away_team.name }}</span>
+                        </div>
+                    </div>
+
+                    <div class="home-stat-grid">
+                        <div class="home-stat-card">
+                            <span>Apostas</span>
+                            <strong>{{ summary.bets_count }}</strong>
+                        </div>
+
+                        <div class="home-stat-card">
+                            <span>Jackpot</span>
+                            <strong>R$ {{ "%.2f"|format(summary.jackpot) }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="winner-box mt-3">
+                        <span>Ganhador(es)</span>
+                        {% if summary.winner_names %}
+                        <strong>{{ summary.winner_names|join(", ") }}</strong>
+                        {% elif summary.has_result %}
+                        <strong>Nenhum ganhador</strong>
+                        {% else %}
+                        <strong>Aguardando resultado do jogo</strong>
+                        {% endif %}
+                    </div>
+
+                    <a class="btn btn-outline-light w-100 mt-3" href="/games/{{ game.id }}/bets">
+                        Ver apostas
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="user-card text-center text-secondary py-4">
+            Nenhum bolão encerrado ainda.
         </div>
         {% endif %}
     </div>

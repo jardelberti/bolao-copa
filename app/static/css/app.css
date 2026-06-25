@@ -1087,3 +1087,150 @@ footer {
     color: var(--app-muted);
     font-size: 0.82rem;
 }
+
+.featured-pool-card {
+    padding: 1.25rem;
+}
+
+.featured-match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+}
+
+.featured-team {
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    text-align: center;
+}
+
+.featured-team strong {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 1.05rem;
+}
+
+.featured-flag {
+    width: 4.25rem;
+    height: 2.8rem;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.35rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.featured-versus {
+    min-width: 4.5rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid rgba(217, 166, 58, 0.4);
+    border-radius: 0.5rem;
+    background: rgba(217, 166, 58, 0.1);
+    color: var(--app-gold-soft);
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 900;
+}
+
+.featured-date {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: #dce5df;
+    text-align: center;
+    font-weight: 800;
+}
+
+.home-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.home-stat-card {
+    padding: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.home-stat-card span,
+.home-stat-card strong {
+    display: block;
+}
+
+.home-stat-card span {
+    color: var(--app-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.home-stat-card strong {
+    margin-top: 0.35rem;
+    color: var(--app-text);
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+}
+
+.winner-box {
+    padding: 0.85rem;
+    border: 1px solid rgba(217, 166, 58, 0.18);
+    border-radius: 0.5rem;
+    background: rgba(217, 166, 58, 0.08);
+}
+
+.winner-box span,
+.winner-box strong {
+    display: block;
+}
+
+.winner-box span {
+    color: var(--app-gold-soft);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.winner-box strong {
+    margin-top: 0.35rem;
+    color: var(--app-text);
+    overflow-wrap: anywhere;
+}
+
+.finished-game-card {
+    opacity: 0.96;
+}
+
+@media (max-width: 575.98px) {
+    .featured-pool-card {
+        padding: 1rem;
+    }
+
+    .featured-match {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 0.5rem;
+    }
+
+    .featured-flag {
+        width: 3rem;
+        height: 2rem;
+    }
+
+    .featured-team strong {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+
+    .featured-versus {
+        min-width: 3rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .home-stat-grid {
+        grid-template-columns: 1fr;
+    }
+}
