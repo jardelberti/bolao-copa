@@ -7,47 +7,73 @@
             <div>
                 <span class="section-kicker">Carteira</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Solicitar saque</h1>
+                <p class="text-secondary mt-2 mb-0">
+                    Informe o valor e a chave PIX para receber o saque após aprovação do administrador.
+                </p>
             </div>
-            <a class="btn btn-outline-light user-action-btn" href="/wallet/withdraws">Meus saques</a>
+
+            <a class="btn btn-outline-light user-action-btn" href="/wallet/withdraws">
+                Meus saques
+            </a>
         </div>
 
         {% if error %}
-        <div class="alert alert-danger mb-4" role="alert">{{ error }}</div>
+        <div class="alert alert-danger mb-4" role="alert">
+            {{ error }}
+        </div>
         {% endif %}
 
         {% if success %}
         <div class="alert alert-success mb-4" role="alert">
-            Solicitação de saque enviada com sucesso.
+            Saque solicitado com sucesso. A solicitação está aguardando aprovação do administrador.
         </div>
         {% endif %}
 
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="bet-info-card">
-                    <span>Saldo atual</span>
-                    <strong class="fs-4">
-                        {% if wallet %}
-                            R$ {{ "%.2f"|format(wallet.balance) }}
-                        {% else %}
-                            R$ 0.00
-                        {% endif %}
-                    </strong>
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-5">
+                <div class="user-card h-100">
+                    <span class="section-kicker">Resumo</span>
+                    <h2 class="h5 fw-bold mt-2 mb-3">Sua carteira</h2>
+
+                    <div class="deposit-balance-box mb-3">
+                        <span>Saldo disponível</span>
+                        <strong>
+                            {% if wallet %}
+                                R$ {{ "%.2f"|format(wallet.balance) }}
+                            {% else %}
+                                R$ 0.00
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="deposit-help-box">
+                        <strong>Importante</strong>
+                        <span>
+                            O valor só será debitado da sua carteira depois que o administrador aprovar o saque.
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-8">
+
+            <div class="col-lg-7">
                 <div class="user-card">
-                    <h2 class="h5 mb-4">Dados do saque</h2>
+                    <span class="section-kicker">Novo saque</span>
+                    <h2 class="h5 fw-bold mt-2 mb-3">Dados para pagamento</h2>
 
                     <form method="post" action="/wallet/withdraw">
                         <div class="mb-3">
-                            <label class="form-label" for="requested_amount">Valor solicitado</label>
+                            <label class="form-label" for="requested_amount">
+                                Valor do saque
+                            </label>
+
                             <input
-                                class="form-control"
+                                class="form-control deposit-amount-input"
                                 id="requested_amount"
                                 type="number"
                                 name="requested_amount"
                                 min="0.01"
                                 step="0.01"
+                                inputmode="decimal"
                                 required
                                 value="{{ form.requested_amount if form else '' }}"
                                 placeholder="Ex.: 50.00"
@@ -56,19 +82,29 @@
 
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label class="form-label" for="pix_key_type">Tipo da chave PIX</label>
-                                <input
-                                    class="form-control"
+                                <label class="form-label" for="pix_key_type">
+                                    Tipo da chave PIX
+                                </label>
+
+                                <select
+                                    class="form-select"
                                     id="pix_key_type"
                                     name="pix_key_type"
-                                    type="text"
-                                    maxlength="30"
                                     required
-                                    value="{{ form.pix_key_type if form else '' }}"
                                 >
+                                    <option value="">Selecione</option>
+                                    <option value="CPF" {% if form and form.pix_key_type == "CPF" %}selected{% endif %}>CPF</option>
+                                    <option value="E-mail" {% if form and form.pix_key_type == "E-mail" %}selected{% endif %}>E-mail</option>
+                                    <option value="Telefone" {% if form and form.pix_key_type == "Telefone" %}selected{% endif %}>Telefone</option>
+                                    <option value="Chave aleatória" {% if form and form.pix_key_type == "Chave aleatória" %}selected{% endif %}>Chave aleatória</option>
+                                </select>
                             </div>
+
                             <div class="col-md-8">
-                                <label class="form-label" for="pix_key">Chave PIX</label>
+                                <label class="form-label" for="pix_key">
+                                    Chave PIX
+                                </label>
+
                                 <input
                                     class="form-control"
                                     id="pix_key"
@@ -77,17 +113,27 @@
                                     maxlength="255"
                                     required
                                     value="{{ form.pix_key if form else '' }}"
+                                    placeholder="Digite sua chave PIX"
                                 >
                             </div>
                         </div>
 
-                        <div class="alert alert-info mt-4">
-                            A carteira será debitada somente após a aprovação do administrador.
+                        <div class="deposit-status-box mt-4 mb-3">
+                            <span>Status após enviar</span>
+                            <strong>Saque solicitado — aguardando aprovação do administrador</strong>
+                            <small>
+                                O saldo continua na carteira até a solicitação ser aprovada.
+                            </small>
                         </div>
 
                         <div class="d-grid d-sm-flex gap-2">
-                            <button class="btn btn-gold btn-lg" type="submit">Solicitar saque</button>
-                            <a class="btn btn-outline-light btn-lg" href="/dashboard">Voltar</a>
+                            <button class="btn btn-gold btn-lg user-action-btn" type="submit">
+                                Solicitar saque
+                            </button>
+
+                            <a class="btn btn-outline-light btn-lg user-action-btn" href="/dashboard">
+                                Voltar
+                            </a>
                         </div>
                     </form>
                 </div>
