@@ -6,18 +6,102 @@
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
             <div>
                 <span class="section-kicker">Bolão da Copa</span>
-                <h1 class="h2 fw-bold mt-2 mb-0">Jogos disponíveis</h1>
+                <h1 class="h2 fw-bold mt-2 mb-0">Jogos e bolões</h1>
             </div>
+
             <a class="btn btn-outline-light user-action-btn" href="/my-bets">Minhas apostas</a>
         </div>
 
-        <div class="row g-3">
-            {% for game in games %}
+        {% if featured_game %}
+        {% set summary = game_summaries.get(featured_game.id) %}
+
+        <div class="user-card game-highlight-card mb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
+                <div>
+                    <span class="section-kicker">Próximo bolão disponível</span>
+                    <h2 class="h3 fw-bold mt-2 mb-0">
+                        {{ featured_game.home_team.name }} x {{ featured_game.away_team.name }}
+                    </h2>
+                </div>
+
+                <span class="status-pill {{ summary.status_class }}">
+                    {{ summary.status_label }}
+                </span>
+            </div>
+
+            <div class="game-highlight-match mb-4">
+                <div class="game-highlight-team">
+                    <img class="game-highlight-flag" src="{{ featured_game.home_team.flag_url }}" alt="Bandeira {{ featured_game.home_team.name }}">
+                    <strong>{{ featured_game.home_team.name }}</strong>
+                </div>
+
+                <div class="game-highlight-versus">x</div>
+
+                <div class="game-highlight-team">
+                    <img class="game-highlight-flag" src="{{ featured_game.away_team.flag_url }}" alt="Bandeira {{ featured_game.away_team.name }}">
+                    <strong>{{ featured_game.away_team.name }}</strong>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-lg-3">
+                    <div class="bet-info-card">
+                        <span>Data/Hora</span>
+                        <strong>{{ featured_game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="bet-info-card">
+                        <span>Apostas</span>
+                        <strong>{{ summary.bets_count }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="bet-info-card">
+                        <span>Valor do palpite</span>
+                        <strong>R$ {{ "%.2f"|format(featured_game.bet_price) }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="bet-info-card">
+                        <span>Jackpot</span>
+                        <strong>R$ {{ "%.2f"|format(featured_game.jackpot_amount) }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid d-sm-flex gap-2">
+                <a class="btn btn-gold btn-lg px-4 user-action-btn" href="/games/{{ featured_game.id }}">
+                    Dar meu palpite
+                </a>
+
+                <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games/{{ featured_game.id }}/bets">
+                    Ver apostas
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Abertos</span>
+                <h2 class="h3 fw-bold mt-2 mb-0">Outros jogos disponíveis</h2>
+            </div>
+        </div>
+
+        {% if open_games %}
+        <div class="row g-3 mb-5">
+            {% for game in open_games %}
+            {% set summary = game_summaries.get(game.id) %}
+
             <div class="col-12 col-lg-6">
                 <div class="user-card h-100">
                     <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
                         <span class="feature-number">{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</span>
-                        <span class="status-pill status-pending">{{ bet_counts.get(game.id, 0) }} apostas</span>
+                        <span class="status-pill {{ summary.status_class }}">{{ summary.bets_count }} apostas</span>
                     </div>
 
                     <div class="bet-score-card mb-4">
@@ -25,7 +109,9 @@
                             <span class="team-name-small">{{ game.home_team.name }}</span>
                             <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
                         </div>
+
                         <div class="bet-score">x</div>
+
                         <div class="team-side away">
                             <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
                             <span class="team-name-small">{{ game.away_team.name }}</span>
@@ -35,10 +121,11 @@
                     <div class="row g-3 mb-4">
                         <div class="col-6">
                             <div class="bet-info-card">
-                                <span>Valor da aposta</span>
+                                <span>Valor</span>
                                 <strong>R$ {{ "%.2f"|format(game.bet_price) }}</strong>
                             </div>
                         </div>
+
                         <div class="col-6">
                             <div class="bet-info-card">
                                 <span>Jackpot</span>
@@ -48,25 +135,90 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        {% if game.home_score is not none or game.away_score is not none %}
-                        <span class="status-pill status-approved user-status-block">Jogo finalizado</span>
-                        {% elif now >= game.match_datetime %}
-                        <span class="status-pill status-danger user-status-block">Apostas encerradas</span>
-                        {% else %}
                         <a class="btn btn-gold btn-lg" href="/games/{{ game.id }}">Apostar</a>
-                        {% endif %}
                         <a class="btn btn-outline-light" href="/games/{{ game.id }}/bets">Ver apostas</a>
                     </div>
                 </div>
             </div>
-            {% else %}
-            <div class="col-12">
-                <div class="user-card text-center text-secondary py-5">
-                    Nenhum jogo disponível.
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="user-card text-center text-secondary py-4 mb-5">
+            Não há outros jogos abertos para aposta no momento.
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="section-kicker">Encerrados</span>
+                <h2 class="h3 fw-bold mt-2 mb-0">Jogos encerrados ou aguardando resultado</h2>
+            </div>
+        </div>
+
+        {% if closed_games %}
+        <div class="row g-3">
+            {% for game in closed_games %}
+            {% set summary = game_summaries.get(game.id) %}
+
+            <div class="col-12 col-lg-6">
+                <div class="user-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <span class="feature-number">{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</span>
+                        <span class="status-pill {{ summary.status_class }}">{{ summary.status_label }}</span>
+                    </div>
+
+                    <div class="bet-score-card mb-4">
+                        <div class="team-side home">
+                            <span class="team-name-small">{{ game.home_team.name }}</span>
+                            <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                        </div>
+
+                        <div class="bet-score">
+                            {% if summary.has_result %}
+                            {{ game.home_score }} x {{ game.away_score }}
+                            {% else %}
+                            x
+                            {% endif %}
+                        </div>
+
+                        <div class="team-side away">
+                            <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                            <span class="team-name-small">{{ game.away_team.name }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Apostas</span>
+                                <strong>{{ summary.bets_count }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="bet-info-card">
+                                <span>Jackpot</span>
+                                <strong>R$ {{ "%.2f"|format(game.jackpot_amount) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="btn btn-outline-light w-100" href="/games/{{ game.id }}/bets">
+                        Ver apostas
+                    </a>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% elif not games %}
+        <div class="user-card text-center text-secondary py-5">
+            Nenhum jogo disponível.
+        </div>
+        {% else %}
+        <div class="user-card text-center text-secondary py-4">
+            Nenhum jogo encerrado ainda.
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

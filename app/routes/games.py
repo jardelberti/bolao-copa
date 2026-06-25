@@ -36,6 +36,46 @@ def get_db():
         db.close()
 
 
+def build_game_summaries(db: Session, games: list[Game], now: datetime) -> dict[int, dict]:
+    bet_counts = dict(
+        db.query(Bet.game_id, func.count(Bet.id))
+        .group_by(Bet.game_id)
+        .all()
+    )
+
+    summaries = {}
+
+    for game in games:
+        has_result = (
+            game.home_score is not None
+            and game.away_score is not None
+        )
+
+        is_started = now >= game.match_datetime
+        is_open = not is_started and not has_result
+
+        if has_result:
+            status_label = "Finalizado"
+            status_class = "status-approved"
+        elif is_started:
+            status_label = "Aguardando resultado do jogo"
+            status_class = "status-pending"
+        else:
+            status_label = "Aberto para apostas"
+            status_class = "status-prize"
+
+        summaries[game.id] = {
+            "bets_count": int(bet_counts.get(game.id, 0)),
+            "has_result": has_result,
+            "is_started": is_started,
+            "is_open": is_open,
+            "status_label": status_label,
+            "status_class": status_class,
+        }
+
+    return summaries
+
+
 @router.get("/games")
 async def games(request: Request, db: Session = Depends(get_db)):
     current_user = require_current_user(request, db)
@@ -47,11 +87,30 @@ async def games(request: Request, db: Session = Depends(get_db)):
         .order_by(Game.match_datetime.asc(), Game.id.asc())
         .all()
     )
-    bet_counts = dict(
-        db.query(Bet.game_id, func.count(Bet.id))
-        .group_by(Bet.game_id)
-        .all()
+
+    game_summaries = build_game_summaries(db, games_list, now)
+
+    featured_game = next(
+        (
+            game
+            for game in games_list
+            if game_summaries[game.id]["is_open"]
+        ),
+        None,
     )
+
+    open_games = [
+        game
+        for game in games_list
+        if game_summaries[game.id]["is_open"]
+        and (not featured_game or game.id != featured_game.id)
+    ]
+
+    closed_games = [
+        game
+        for game in sorted(games_list, key=lambda item: item.match_datetime, reverse=True)
+        if not game_summaries[game.id]["is_open"]
+    ]
 
     return templates.TemplateResponse(
         request=request,
@@ -60,7 +119,10 @@ async def games(request: Request, db: Session = Depends(get_db)):
             "title": "Jogos",
             "current_user": current_user,
             "games": games_list,
-            "bet_counts": bet_counts,
+            "featured_game": featured_game,
+            "open_games": open_games,
+            "closed_games": closed_games,
+            "game_summaries": game_summaries,
             "now": now,
         },
     )
@@ -85,6 +147,21 @@ async def game_detail(
 
     wallet = db.query(Wallet).filter(Wallet.user_id == current_user.id).first()
 
+    bet_count = (
+        db.query(func.count(Bet.id))
+        .filter(Bet.game_id == game.id)
+        .scalar()
+        or 0
+    )
+
+    has_result = (
+        game.home_score is not None
+        and game.away_score is not None
+    )
+
+    is_started = now >= game.match_datetime
+    is_open = not is_started and not has_result
+
     return templates.TemplateResponse(
         request=request,
         name="games/detail.html",
@@ -93,6 +170,10 @@ async def game_detail(
             "current_user": current_user,
             "game": game,
             "wallet": wallet,
+            "bet_count": int(bet_count),
+            "has_result": has_result,
+            "is_started": is_started,
+            "is_open": is_open,
             "error": error,
             "now": now,
         },

@@ -6,55 +6,79 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="auth-card bet-detail-card">
-                    <span class="section-kicker">Apostar</span>
-                    <h1 class="h2 fw-bold mt-2 mb-4">{{ game.home_team.name }} x {{ game.away_team.name }}</h1>
+                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+                        <div>
+                            <span class="section-kicker">Dar palpite</span>
+                            <h1 class="h2 fw-bold mt-2 mb-0">
+                                {{ game.home_team.name }} x {{ game.away_team.name }}
+                            </h1>
+                        </div>
+
+                        {% if is_open %}
+                        <span class="status-pill status-prize">Aberto para apostas</span>
+                        {% elif has_result %}
+                        <span class="status-pill status-approved">Jogo finalizado</span>
+                        {% else %}
+                        <span class="status-pill status-pending">Aguardando resultado do jogo</span>
+                        {% endif %}
+                    </div>
 
                     {% if error %}
                     <div class="alert alert-danger" role="alert">{{ error }}</div>
                     {% endif %}
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <div class="score-card h-100">
-                                <div class="team-flag-cell team-flag-cell-compact">
-                                    <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
-                                    <strong>{{ game.home_team.name }}</strong>
-                                </div>
-                            </div>
+                    <div class="pick-match-card mb-4">
+                        <div class="pick-match-team">
+                            <img class="pick-match-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                            <strong>{{ game.home_team.name }}</strong>
                         </div>
-                        <div class="col-md-6">
-                            <div class="score-card h-100">
-                                <div class="team-flag-cell team-flag-cell-compact">
-                                    <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
-                                    <strong>{{ game.away_team.name }}</strong>
-                                </div>
-                            </div>
+
+                        <div class="pick-match-vs">
+                            {% if has_result %}
+                            {{ game.home_score }} x {{ game.away_score }}
+                            {% else %}
+                            x
+                            {% endif %}
+                        </div>
+
+                        <div class="pick-match-team">
+                            <img class="pick-match-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                            <strong>{{ game.away_team.name }}</strong>
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
-                        <div class="col-md-4">
+                        <div class="col-6 col-md-3">
                             <div class="bet-info-card">
                                 <span>Data/Hora</span>
                                 <strong>{{ game.match_datetime.strftime("%d/%m/%Y %H:%M") }}</strong>
                             </div>
                         </div>
-                        <div class="col-md-4">
+
+                        <div class="col-6 col-md-3">
                             <div class="bet-info-card">
-                                <span>Valor da aposta</span>
+                                <span>Palpite</span>
                                 <strong>R$ {{ "%.2f"|format(game.bet_price) }}</strong>
                             </div>
                         </div>
-                        <div class="col-md-4">
+
+                        <div class="col-6 col-md-3">
                             <div class="bet-info-card">
-                                <span>Jackpot atual</span>
+                                <span>Apostas</span>
+                                <strong>{{ bet_count }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="bet-info-card">
+                                <span>Jackpot</span>
                                 <strong>R$ {{ "%.2f"|format(game.jackpot_amount) }}</strong>
                             </div>
                         </div>
                     </div>
 
                     <div class="jackpot-strip mb-4">
-                        <span>Saldo disponível</span>
+                        <span>Seu saldo disponível</span>
                         <strong>
                             {% if wallet %}
                                 R$ {{ "%.2f"|format(wallet.balance) }}
@@ -64,44 +88,97 @@
                         </strong>
                     </div>
 
-                    {% if game.home_score is not none or game.away_score is not none %}
+                    {% if has_result %}
                     <div class="alert alert-warning" role="alert">
-                        Jogo finalizado
+                        Este jogo já foi finalizado. Não é mais possível apostar.
                     </div>
+
                     <div class="d-grid d-sm-flex gap-3 mt-4">
-                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
+                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar para jogos</a>
+                        <a class="btn btn-gold btn-lg px-4 user-action-btn" href="/games/{{ game.id }}/bets">Ver apostas</a>
                     </div>
-                    {% elif now >= game.match_datetime %}
+
+                    {% elif is_started %}
                     <div class="alert alert-warning" role="alert">
-                        Apostas encerradas
+                        As apostas foram encerradas porque o jogo já começou. Agora o bolão está aguardando o resultado da partida.
                     </div>
+
                     <div class="d-grid d-sm-flex gap-3 mt-4">
-                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
+                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar para jogos</a>
+                        <a class="btn btn-gold btn-lg px-4 user-action-btn" href="/games/{{ game.id }}/bets">Ver apostas</a>
                     </div>
+
                     {% elif not wallet or wallet.balance < game.bet_price %}
                     <div class="alert alert-warning" role="alert">
-                        Saldo insuficiente para apostar neste jogo.
+                        Seu saldo não é suficiente para apostar neste jogo.
+                        Faça um depósito para adicionar saldo à sua carteira.
                     </div>
+
                     <div class="d-grid d-sm-flex gap-3 mt-4">
                         <a class="btn btn-gold btn-lg px-4 user-action-btn" href="/wallet/deposit">Depositar saldo</a>
-                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
+                        <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar para jogos</a>
                     </div>
+
                     {% else %}
                     <form method="post" action="/games/{{ game.id }}/bet" novalidate>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label" for="home_score_guess">Placar {{ game.home_team.name }}</label>
-                                <input class="form-control score-input" id="home_score_guess" name="home_score_guess" type="number" min="0" step="1" required>
+                        <div class="pick-score-card">
+                            <div class="pick-score-title">
+                                <span>Seu palpite</span>
+                                <strong>Digite o placar exato que você quer apostar</strong>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="away_score_guess">Placar {{ game.away_team.name }}</label>
-                                <input class="form-control score-input" id="away_score_guess" name="away_score_guess" type="number" min="0" step="1" required>
+
+                            <div class="pick-score-row">
+                                <label class="pick-score-team" for="home_score_guess">
+                                    <img class="team-flag" src="{{ game.home_team.flag_url }}" alt="Bandeira {{ game.home_team.name }}">
+                                    <span>{{ game.home_team.name }}</span>
+                                </label>
+
+                                <input
+                                    class="form-control score-input"
+                                    id="home_score_guess"
+                                    name="home_score_guess"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    inputmode="numeric"
+                                    placeholder="0"
+                                    required
+                                >
+                            </div>
+
+                            <div class="pick-score-row">
+                                <label class="pick-score-team" for="away_score_guess">
+                                    <img class="team-flag" src="{{ game.away_team.flag_url }}" alt="Bandeira {{ game.away_team.name }}">
+                                    <span>{{ game.away_team.name }}</span>
+                                </label>
+
+                                <input
+                                    class="form-control score-input"
+                                    id="away_score_guess"
+                                    name="away_score_guess"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    inputmode="numeric"
+                                    placeholder="0"
+                                    required
+                                >
+                            </div>
+
+                            <div class="pick-score-help">
+                                Cada palpite custa R$ {{ "%.2f"|format(game.bet_price) }}.
+                                O valor será descontado do seu saldo ao confirmar a aposta.
                             </div>
                         </div>
 
                         <div class="d-grid d-sm-flex gap-3 mt-4">
-                            <button class="btn btn-gold btn-lg px-4 user-action-btn" type="submit">Apostar</button>
-                            <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">Voltar</a>
+                            <button class="btn btn-gold btn-lg px-4 user-action-btn" type="submit">
+                                Confirmar palpite
+                            </button>
+
+                            <a class="btn btn-outline-light btn-lg px-4 user-action-btn" href="/games">
+                                Voltar
+                            </a>
                         </div>
                     </form>
                     {% endif %}

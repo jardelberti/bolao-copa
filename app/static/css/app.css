@@ -1234,3 +1234,194 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+.game-highlight-card {
+    padding: 1.25rem;
+}
+
+.game-highlight-match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+}
+
+.game-highlight-team {
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    text-align: center;
+    min-width: 0;
+}
+
+.game-highlight-team strong {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 1.05rem;
+}
+
+.game-highlight-flag {
+    width: 4.25rem;
+    height: 2.8rem;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.35rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.game-highlight-versus {
+    min-width: 4.5rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid rgba(217, 166, 58, 0.4);
+    border-radius: 0.5rem;
+    background: rgba(217, 166, 58, 0.1);
+    color: var(--app-gold-soft);
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 900;
+}
+
+.pick-match-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.pick-match-team {
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    text-align: center;
+    min-width: 0;
+}
+
+.pick-match-team strong {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.pick-match-flag {
+    width: 4rem;
+    height: 2.65rem;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.35rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.pick-match-vs {
+    min-width: 4rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(217, 166, 58, 0.4);
+    border-radius: 0.5rem;
+    background: rgba(217, 166, 58, 0.1);
+    color: var(--app-gold-soft);
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 900;
+}
+
+.pick-score-card {
+    padding: 1rem;
+    border: 1px solid rgba(217, 166, 58, 0.18);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.pick-score-title {
+    margin-bottom: 1rem;
+}
+
+.pick-score-title span,
+.pick-score-title strong {
+    display: block;
+}
+
+.pick-score-title span {
+    color: var(--app-gold-soft);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.pick-score-title strong {
+    margin-top: 0.3rem;
+    font-size: 1.05rem;
+}
+
+.pick-score-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 5.5rem;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.pick-score-team {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    margin: 0;
+    font-weight: 800;
+}
+
+.pick-score-team span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.pick-score-help {
+    color: var(--app-muted);
+    font-size: 0.88rem;
+}
+
+@media (max-width: 575.98px) {
+    .game-highlight-card {
+        padding: 1rem;
+    }
+
+    .game-highlight-match,
+    .pick-match-card {
+        gap: 0.5rem;
+    }
+
+    .game-highlight-flag,
+    .pick-match-flag {
+        width: 3rem;
+        height: 2rem;
+    }
+
+    .game-highlight-team strong,
+    .pick-match-team strong {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+
+    .game-highlight-versus,
+    .pick-match-vs {
+        min-width: 3rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .pick-score-row {
+        grid-template-columns: minmax(0, 1fr) 4.75rem;
+        gap: 0.65rem;
+        padding: 0.75rem;
+    }
+
+    .pick-score-team {
+        gap: 0.55rem;
+        font-size: 0.9rem;
+    }
+}
