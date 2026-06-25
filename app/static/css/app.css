@@ -1425,3 +1425,100 @@ footer {
         font-size: 0.9rem;
     }
 }
+
+.deposit-quick-card,
+.deposit-form-card,
+.deposit-result-card {
+    padding: 1.25rem;
+}
+
+.deposit-balance-box,
+.deposit-pix-box,
+.deposit-status-box,
+.deposit-help-box {
+    padding: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.deposit-balance-box span,
+.deposit-balance-box strong,
+.deposit-pix-box span,
+.deposit-pix-box strong,
+.deposit-status-box span,
+.deposit-status-box strong,
+.deposit-status-box small,
+.deposit-help-box strong,
+.deposit-help-box span {
+    display: block;
+}
+
+.deposit-balance-box span,
+.deposit-pix-box span,
+.deposit-status-box span {
+    color: var(--app-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.deposit-balance-box strong {
+    margin-top: 0.35rem;
+    color: var(--app-gold-soft);
+    font-size: 1.85rem;
+}
+
+.deposit-pix-box strong {
+    margin-top: 0.35rem;
+    color: var(--app-text);
+    overflow-wrap: anywhere;
+}
+
+.deposit-status-box {
+    border-color: rgba(217, 166, 58, 0.18);
+    background: rgba(217, 166, 58, 0.08);
+}
+
+.deposit-status-box strong {
+    margin-top: 0.35rem;
+    color: var(--app-text);
+    overflow-wrap: anywhere;
+}
+
+.deposit-status-box small {
+    margin-top: 0.35rem;
+    color: var(--app-muted);
+}
+
+.deposit-status-approved {
+    border-color: rgba(17, 184, 111, 0.22);
+    background: rgba(17, 184, 111, 0.08);
+}
+
+.deposit-help-box strong {
+    color: var(--app-gold-soft);
+    margin-bottom: 0.25rem;
+}
+
+.deposit-help-box span {
+    color: var(--app-muted);
+}
+
+.deposit-amount-input {
+    min-height: 3.5rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+@media (max-width: 767.98px) {
+    .deposit-quick-card,
+    .deposit-form-card,
+    .deposit-result-card {
+        padding: 1rem;
+    }
+
+    .deposit-amount-input {
+        font-size: 1.2rem;
+    }
+}

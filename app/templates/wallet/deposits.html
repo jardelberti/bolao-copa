@@ -8,7 +8,10 @@
                 <span class="section-kicker">Carteira</span>
                 <h1 class="h2 fw-bold mt-2 mb-0">Meus depósitos</h1>
             </div>
-            <a class="btn btn-gold user-action-btn" href="/wallet/deposit">Solicitar depósito</a>
+
+            <a class="btn btn-gold user-action-btn" href="/wallet/deposit">
+                Adicionar saldo
+            </a>
         </div>
 
         <div class="row g-3">
@@ -16,20 +19,48 @@
             <div class="col-12 col-lg-6">
                 <div class="user-card h-100">
                     <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-                        <strong>R$ {{ "%.2f"|format(deposit.requested_amount) }}</strong>
+                        <div>
+                            <span class="section-kicker">Solicitação</span>
+                            <strong class="d-block fs-4 mt-1">
+                                R$ {{ "%.2f"|format(deposit.requested_amount) }}
+                            </strong>
+                        </div>
+
                         {% if deposit.status == "APPROVED" %}
                         <span class="status-pill status-approved">Aprovado</span>
                         {% elif deposit.status == "REJECTED" %}
                         <span class="status-pill status-muted">Rejeitado</span>
                         {% else %}
-                        <span class="status-pill status-pending">Pendente</span>
+                        <span class="status-pill status-pending">
+                            Aguardando aprovação
+                        </span>
                         {% endif %}
                     </div>
+
+                    {% if deposit.status == "APPROVED" %}
+                    <div class="deposit-status-box deposit-status-approved mb-3">
+                        <span>Status</span>
+                        <strong>Depósito aprovado e saldo liberado</strong>
+                    </div>
+                    {% elif deposit.status == "REJECTED" %}
+                    <div class="deposit-status-box mb-3">
+                        <span>Status</span>
+                        <strong>Depósito rejeitado pelo administrador</strong>
+                    </div>
+                    {% else %}
+                    <div class="deposit-status-box mb-3">
+                        <span>Status</span>
+                        <strong>Depósito enviado — aguardando conferência do administrador</strong>
+                        <small>
+                            O saldo ainda não foi liberado na carteira.
+                        </small>
+                    </div>
+                    {% endif %}
 
                     <div class="row g-3 mb-3">
                         <div class="col-6">
                             <div class="bet-info-card">
-                                <span>Creditado</span>
+                                <span>Valor liberado</span>
                                 <strong>
                                     {% if deposit.credited_amount is not none %}
                                         R$ {{ "%.2f"|format(deposit.credited_amount) }}
@@ -39,6 +70,7 @@
                                 </strong>
                             </div>
                         </div>
+
                         <div class="col-6">
                             <div class="bet-info-card">
                                 <span>Data</span>
