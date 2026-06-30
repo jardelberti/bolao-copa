@@ -88,50 +88,6 @@
         {% else %}
 
         <div class="row g-4 align-items-start">
-            <div class="col-lg-5">
-                <div class="user-card deposit-quick-card h-100">
-                    <span class="section-kicker">Resumo</span>
-                    <h2 class="h5 fw-bold mt-2 mb-3">Sua carteira</h2>
-
-                    <div class="deposit-balance-box mb-3">
-                        <span>Saldo atual</span>
-                        <strong>
-                            R$
-                            {% if wallet %}
-                                {{ "%.2f"|format(wallet.balance) }}
-                            {% else %}
-                                0.00
-                            {% endif %}
-                        </strong>
-                    </div>
-
-                    <div class="deposit-pix-box">
-                        <span>Chave PIX</span>
-
-                        {% if payment_settings %}
-                        <strong id="pix-key">{{ payment_settings.pix_key }}</strong>
-
-                        <div class="text-secondary small mt-2">
-                            {{ payment_settings.pix_key_type }} ·
-                            {{ payment_settings.recipient_name }} ·
-                            {{ payment_settings.recipient_city }}
-                        </div>
-
-                        <button
-                            type="button"
-                            class="btn btn-outline-light w-100 mt-3"
-                            onclick="navigator.clipboard.writeText(document.getElementById('pix-key').innerText)">
-                            Copiar chave PIX
-                        </button>
-                        {% else %}
-                        <strong class="text-warning">
-                            Nenhuma configuração PIX cadastrada.
-                        </strong>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
             <div class="col-lg-7">
                 <div class="user-card deposit-form-card">
                     <span class="section-kicker">Novo depósito</span>
@@ -190,6 +146,33 @@
                             </a>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="user-card deposit-quick-card h-100">
+                    <span class="section-kicker">Resumo</span>
+                    <h2 class="h5 fw-bold mt-2 mb-3">Sua carteira</h2>
+
+                    <div class="deposit-balance-box mb-3">
+                        <span>Saldo atual</span>
+                        <strong>
+                            R$
+                            {% if wallet %}
+                                {{ "%.2f"|format(wallet.balance) }}
+                            {% else %}
+                                0.00
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    {% if not payment_settings %}
+                    <div class="deposit-pix-box">
+                        <strong class="text-warning">
+                            Nenhuma configuração PIX cadastrada.
+                        </strong>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

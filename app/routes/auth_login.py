@@ -47,12 +47,27 @@ async def login(request: Request, db: Session = Depends(get_db)):
 async def login_post(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
-    email: Annotated[str, Form()],
-    password: Annotated[str, Form()],
+    email: Annotated[str | None, Form()] = None,
+    password: Annotated[str | None, Form()] = None,
 ):
+    email = email or ""
+    password = password or ""
     form_data = {
         "email": email,
     }
+
+    if not email.strip() or not password:
+        return templates.TemplateResponse(
+            request=request,
+            name="login.html",
+            context={
+                "title": "Entrar",
+                "form": form_data,
+                "error": "Informe email e senha para entrar.",
+                "current_user": get_current_user(request, db),
+            },
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
 
     try:
         user = authenticate_user(db, email, password)

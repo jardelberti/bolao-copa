@@ -52,13 +52,19 @@ async def register(
 async def register_post(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
-    name: Annotated[str, Form()],
-    email: Annotated[str, Form()],
-    pix_type: Annotated[str, Form()],
-    pix_key: Annotated[str, Form()],
-    password: Annotated[str, Form()],
-    password_confirmation: Annotated[str, Form()],
+    name: Annotated[str | None, Form()] = None,
+    email: Annotated[str | None, Form()] = None,
+    pix_type: Annotated[str | None, Form()] = None,
+    pix_key: Annotated[str | None, Form()] = None,
+    password: Annotated[str | None, Form()] = None,
+    password_confirmation: Annotated[str | None, Form()] = None,
 ):
+    name = name or ""
+    email = email or ""
+    pix_type = pix_type or ""
+    pix_key = pix_key or ""
+    password = password or ""
+    password_confirmation = password_confirmation or ""
     form_data = {
         "name": name,
         "email": email,
